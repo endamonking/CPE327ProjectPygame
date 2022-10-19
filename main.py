@@ -12,7 +12,7 @@ FPS = 60
 pygame.display.set_caption("Demon's tower")
 
 #ASSET
-button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
+button_image = pygame.image.load(os.path.join('Project/Asset', 'prBTN.png'))
 button1 = button.button(450, 352, button_image, 0.5)
 button2 = button.button(450, 482, button_image, 0.5)
 
