@@ -10,11 +10,11 @@ class button():
         self.rect.topleft = (x,y)
         self.clicked = False
     
-    def draw(self, mPose, WIN):
+    def draw(self, mPose, WIN, color, word, size):
         action = False
         pygame.font.init()
-        my_font = pygame.font.SysFont("Test",30)
-        text_surface = my_font.render('Some Text', False, (0, 0, 0))
+        my_font = pygame.font.SysFont("candara",size)
+        text_surface = my_font.render(word, False, color)
         if self.rect.collidepoint(mPose) and pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
             self.clicked = True
             action = True
