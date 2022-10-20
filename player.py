@@ -1,4 +1,5 @@
 import imp
+from pickle import FALSE
 import pygame
 import os
 
@@ -19,7 +20,13 @@ class player():
         self.attackPoint = attackPoint
         self.lastUpdate = pygame.time.get_ticks()
         self.i = 0
+        self.turn = False
+        self.death = False
 
+    def getAttackPower(self):
+        return self.attackPoint
+    def getTurn(self):
+        return self.turn
    # def get_image(sheet,frame, width, height, scale, WIN):
       #  image = pygame.Surface((width, height)).convert_alpha()
        # WIN.blit(player_image, (0, 0), ((frame * width), 0, width, height))
@@ -41,7 +48,15 @@ class player():
             case 0: #increase maximum HP and MP and heal player
                 print("option 1 increase maximum HP and MP and heal player")
             case 1: #increase attack power of player 
-                print("option 2 increase attack player")
+                print("option 2 increase attack power")
             case 2: #increase defend pointof player
-                print("option 2 increase defend power")
+                print("option 3 increase defend power")
+                
+    def attack(self,enemy):
+        enemy.currentHp = enemy.currentHp - self.attackPoint
+        if enemy.currentHp < 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+
+    
 
