@@ -10,7 +10,7 @@ class button():
         self.rect.topleft = (x,y)
         self.clicked = False
     
-    def draw(self, mPose, WIN, color, word, size):
+    def draw(self, mPose, WIN, color, word, size, txPose, tyPose):
         action = False
         pygame.font.init()
         my_font = pygame.font.SysFont("candara",size)
@@ -23,5 +23,5 @@ class button():
             self.clicked = False
 
         WIN.blit(self.image, (self.rect.x, self.rect.y))
-        WIN.blit(text_surface, (self.rect.x, self.rect.y + 50) )
+        WIN.blit(text_surface, (self.rect.x + txPose, self.rect.y + tyPose) )
         return action

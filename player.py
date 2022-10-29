@@ -1,3 +1,4 @@
+from array import array
 import imp
 from pickle import FALSE
 import pygame
@@ -22,6 +23,16 @@ class player():
         self.i = 0
         self.turn = False
         self.death = False
+<<<<<<< HEAD
+=======
+        self.action = "idle"
+        self.skillList = []
+
+    def getAttackPower(self):
+        return self.attackPoint
+    def getTurn(self):
+        return self.turn
+>>>>>>> 533ea8d2fc34be608f316e9571c5ee9df3e4ea2d
 
     def getAttackPower(self):
         return self.attackPoint
@@ -58,5 +69,11 @@ class player():
             enemy.currentHp = 0
             enemy.death = True
 
+<<<<<<< HEAD
+=======
+    def getSkill(self):
+        self.skillList.append("test")
+        print(self.skillList)
+>>>>>>> 533ea8d2fc34be608f316e9571c5ee9df3e4ea2d
     
 
