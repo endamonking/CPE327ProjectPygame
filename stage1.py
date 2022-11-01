@@ -15,7 +15,7 @@ pygame.display.set_caption("Demon's tower")
 #ASSET
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 button1 = button.button(100, 600, button_image, 6)
-button2 = button.button(600, 600, button_image, 6)
+button2 = button.button(700, 600, button_image, 6)
 battlescreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'battlescreen.png')), (3240, 720))
 counter = 0
 i = 0
@@ -32,11 +32,14 @@ def draw_backgroundaimation(currentTime):
             i = 0
     WIN.blit(battlescreen, (0,0), ((i * 1080), 0, 1080, 720)) #width come from total width / total frame
 
+
 def draw_window(mainplayer,enemy,mp):
     WIN.fill(BLACK)
     current_Time = pygame.time.get_ticks()
     draw_backgroundaimation(current_Time)
     mainplayer.draw_playerIdle(WIN,current_Time, 100, 300)
+    if mainplayer.action == "usingSkill":
+        mainplayer.showSkill(mp, WIN, WHITE)
     if mainplayer.currentHp == 0 :
         print("enemy win")
         exit()
@@ -45,22 +48,23 @@ def draw_window(mainplayer,enemy,mp):
         exit()
     else :
         turn(mainplayer,enemy,mp)
-       
-    if (button2.draw(mp, WIN, WHITE, "Button2", 28, 90 ,37)):
-        mainplayer.getSkill()
+
     pygame.display.update()
 
 def turn(mainplayer,enemy,mp):
     if mainplayer.turn : 
+        if mainplayer.action == "idle":
+            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37):
+                print("player attack")
+                mainplayer.attack(enemy)
+                print(enemy.currentHp)
             
-        if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) :
-            print("player attack")
-            mainplayer.attack(enemy)
-            print(enemy.currentHp)
-            
-            mainplayer.turn = False
-            enemy.turn = True
-      
+                mainplayer.turn = False
+                enemy.turn = True
+
+        if (button2.draw(mp, WIN, WHITE, "Button2", 28, 90 ,37)):
+            mainplayer.action = "usingSkill"
+
     elif enemy.turn :
         print("enemy attack")
         enemy.attack(mainplayer)

@@ -3,11 +3,13 @@ import imp
 from pickle import FALSE
 import pygame
 import os
+import button
 
 #load asset
 BLACK = (0,0,0)
 player_image = pygame.image.load(os.path.join('Asset', 'knight.png'))
 player_image = pygame.transform.scale(player_image, (300, 300)) 
+button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 
 animation_cooldown = 500
 
@@ -24,7 +26,7 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = []
+        self.skillList = ["test1" , "test2"]
 
     def getAttackPower(self):
         return self.attackPoint
@@ -65,5 +67,23 @@ class player():
     def getSkill(self):
         self.skillList.append("test")
         print(self.skillList)
-    
+
+
+    def showSkill(self, mp,  WIN, WHITE):
+        skillbuttonlist = []
+        i = 0
+        xButPose = 400
+        yButPose = 600
+        yNew = 0
+        self.action = "usingSkill"
+
+        for x in self.skillList:
+            skillbuttonlist.append(button.button(xButPose, yButPose + yNew, button_image, 6))
+            yNew = yNew - 100
+        
+        for index, x in enumerate(skillbuttonlist):
+            if x.draw(mp, WIN, WHITE, self.skillList[index], 28, 90, 37):
+                self.action = "idle"
+                print(self.skillList[index])
+
 
