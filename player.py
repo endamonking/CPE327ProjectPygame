@@ -68,7 +68,6 @@ class player():
         self.skillList.append("test")
         print(self.skillList)
 
-
     def showSkill(self, mp,  WIN, WHITE):
         skillbuttonlist = []
         i = 0
@@ -76,14 +75,33 @@ class player():
         yButPose = 600
         yNew = 0
         self.action = "usingSkill"
+        action_cooldown = 0
 
+        #created back button
+        backButton = button.button(xButPose, yButPose + yNew, button_image, 6)
+        if backButton.draw(mp, WIN, WHITE, "Cancel", 28, 90, 37):
+            self.action = "idle"
+            action_cooldown = 90
+
+        yNew = yNew - 100
         for x in self.skillList:
             skillbuttonlist.append(button.button(xButPose, yButPose + yNew, button_image, 6))
             yNew = yNew - 100
         
         for index, x in enumerate(skillbuttonlist):
             if x.draw(mp, WIN, WHITE, self.skillList[index], 28, 90, 37):
+                action_cooldown = 0
                 self.action = "idle"
                 print(self.skillList[index])
+    
+        return action_cooldown
+
+    def useSkill(self, skillName):
+        match skillName:
+            case "test1":
+                print("test1")
+            case "test2":
+                print("test2")
+
 
 

@@ -20,6 +20,8 @@ battlescreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'b
 counter = 0
 i = 0
 BackgroundLastUpdate = pygame.time.get_ticks()
+action_cooldown = 90
+action_WaitTime = 90
 
 def draw_backgroundaimation(currentTime):
     global i
@@ -38,8 +40,6 @@ def draw_window(mainplayer,enemy,mp):
     current_Time = pygame.time.get_ticks()
     draw_backgroundaimation(current_Time)
     mainplayer.draw_playerIdle(WIN,current_Time, 100, 300)
-    if mainplayer.action == "usingSkill":
-        mainplayer.showSkill(mp, WIN, WHITE)
     if mainplayer.currentHp == 0 :
         print("enemy win")
         exit()
@@ -48,31 +48,37 @@ def draw_window(mainplayer,enemy,mp):
         exit()
     else :
         turn(mainplayer,enemy,mp)
-
     pygame.display.update()
 
 def turn(mainplayer,enemy,mp):
+    global action_cooldown
     if mainplayer.turn : 
-        if mainplayer.action == "idle":
-            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37):
+        action_cooldown = action_cooldown + 1
+        if mainplayer.action == "usingSkill":
+            action_cooldown = mainplayer.showSkill(mp, WIN, WHITE)
+        if mainplayer.action == "idle" and action_cooldown >= action_WaitTime :
+            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
                 print("player attack")
                 mainplayer.attack(enemy)
                 print(enemy.currentHp)
-            
+                action_cooldown = 0
                 mainplayer.turn = False
                 enemy.turn = True
-
-        if (button2.draw(mp, WIN, WHITE, "Button2", 28, 90 ,37)):
-            mainplayer.action = "usingSkill"
-
-    elif enemy.turn :
-        print("enemy attack")
-        enemy.attack(mainplayer)
-        print(mainplayer.currentHp)
-        mainplayer.turn = True
-        enemy.turn = False    
+                
+            if (button2.draw(mp, WIN, WHITE, "Button2", 28, 90 ,37)) and action_cooldown >= action_WaitTime :
+                mainplayer.action = "usingSkill"
         
-    
+    elif enemy.turn :
+        action_cooldown = action_cooldown + 1
+        if action_cooldown >= action_WaitTime:
+            print("enemy attack")
+            enemy.attack(mainplayer)
+            print(mainplayer.currentHp)
+            action_cooldown = 0
+            mainplayer.turn = True
+            enemy.turn = False    
+        
+    pygame.display.update()
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True
@@ -88,9 +94,6 @@ def main ():
                 
         mousePose = pygame.mouse.get_pos()
         draw_window(mainplayer,enemy,mousePose)
-
-        
-        
     pygame.quit()
 
 
