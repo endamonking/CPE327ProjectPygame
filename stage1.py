@@ -2,7 +2,7 @@ import pygame
 import os
 import button
 import player
-
+import path
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -17,11 +17,14 @@ button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 button1 = button.button(100, 600, button_image, 6)
 button2 = button.button(700, 600, button_image, 6)
 battlescreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'battlescreen.png')), (3240, 720))
+blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (WIDTH, HEIGHT))
+
 counter = 0
 i = 0
 BackgroundLastUpdate = pygame.time.get_ticks()
 action_cooldown = 90
 action_WaitTime = 90
+gameState = "Normal"
 
 def draw_backgroundaimation(currentTime):
     global i
@@ -36,18 +39,24 @@ def draw_backgroundaimation(currentTime):
 
 
 def draw_window(mainplayer,enemy,mp):
+    global gameState
+
     WIN.fill(BLACK)
     current_Time = pygame.time.get_ticks()
     draw_backgroundaimation(current_Time)
     mainplayer.draw_playerIdle(WIN,current_Time, 100, 300)
+    mainplayer.showHealth(WIN)
     if mainplayer.currentHp == 0 :
-        print("enemy win")
+        gameState = "Lose"
         exit()
     elif enemy.currentHp == 0 :
-        print("player win")
-        exit()
+        gameState = "Win"
     else :
         turn(mainplayer,enemy,mp)
+
+    if gameState == "Win":
+        gameState = path.createPath(WIN,mainplayer,mp, gameState)
+        
     pygame.display.update()
 
 def turn(mainplayer,enemy,mp):
@@ -82,8 +91,8 @@ def turn(mainplayer,enemy,mp):
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True
-    mainplayer = player.player(10,10,10,1)
-    enemy = player.player(10,10,10,2)
+    mainplayer = player.player(10,10,10,15)
+    enemy = player.player(1,10,10,15)
     mainplayer.turn = True
     while gamRunning:
         clock.tick(FPS)

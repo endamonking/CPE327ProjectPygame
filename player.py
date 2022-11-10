@@ -26,19 +26,12 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["test1" , "test2"]
+        self.skillList = []
 
     def getAttackPower(self):
         return self.attackPoint
     def getTurn(self):
         return self.turn
-
-   # def get_image(sheet,frame, width, height, scale, WIN):
-      #  image = pygame.Surface((width, height)).convert_alpha()
-       # WIN.blit(player_image, (0, 0), ((frame * width), 0, width, height))
-       # image = pygame.transform.scale(image, (width * scale, height * scale))
-       # image.set_colorkey(BLACK)
-       # return image
     
     def draw_playerIdle(self,WIN, currentTime, Xpose, Ypose):
         if (currentTime - self.lastUpdate >= animation_cooldown):
@@ -49,7 +42,7 @@ class player():
                 self.i = 0
         WIN.blit(player_image, (Xpose, Ypose), ((self.i * 100), 0, 100, 300)) #width come from total width / total frame
 
-    def upgrade_stat(option ):
+    def upgrade_stat(self,option):
         match option:
             case 0: #increase maximum HP and MP and heal player
                 print("option 1 increase maximum HP and MP and heal player")
@@ -59,14 +52,17 @@ class player():
                 print("option 3 increase defend power")
                 
     def attack(self,enemy):
-        enemy.currentHp = enemy.currentHp - self.attackPoint
+        damaged = self.attackPoint - enemy.defendPoint
+        if damaged <= 0:
+            damaged = 0
+        
+        enemy.currentHp = enemy.currentHp - damaged
         if enemy.currentHp < 0 :
             enemy.currentHp = 0
             enemy.death = True
 
-    def getSkill(self):
-        self.skillList.append("test")
-        print(self.skillList)
+    def getSkill(self, skillName):
+        self.skillList.append(skillName)
 
     def showSkill(self, mp,  WIN, WHITE):
         skillbuttonlist = []
@@ -103,5 +99,19 @@ class player():
             case "test2":
                 print("test2")
 
+    def showHealth(self, WIN):
+        currentHP  = str(self.currentHp)
+        currentMP = str(self.currentMp)
+        my_font = pygame.font.SysFont("candara",40)
 
 
+        #render text
+        text_surface1 = my_font.render("HP : ", False, (255,255,255))
+        WIN.blit(text_surface1, (100, 200))
+        text_surface2 = my_font.render(currentHP, False, (255,255,255))
+        WIN.blit(text_surface2, (200, 200))
+
+        text_surface3 = my_font.render("MP : ", False, (255,255,255))
+        WIN.blit(text_surface3, (100, 250))
+        text_surface4 = my_font.render(currentMP, False, (255,255,255))
+        WIN.blit(text_surface4, (200, 250))
