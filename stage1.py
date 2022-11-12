@@ -3,6 +3,7 @@ import os
 import button
 import player
 import path
+import enemy
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -38,28 +39,30 @@ def draw_backgroundaimation(currentTime):
     WIN.blit(battlescreen, (0,0), ((i * 1080), 0, 1080, 720)) #width come from total width / total frame
 
 
-def draw_window(mainplayer,enemy,mp):
+def draw_window(mainplayer,slime,mp):
     global gameState
 
     WIN.fill(BLACK)
     current_Time = pygame.time.get_ticks()
     draw_backgroundaimation(current_Time)
     mainplayer.draw_playerIdle(WIN,current_Time, 100, 300)
+    slime.draw_enemyIdle(WIN,current_Time, 780, 475)
     mainplayer.showHealth(WIN)
+    slime.showHealth(WIN)
     if mainplayer.currentHp == 0 :
         gameState = "Lose"
         exit()
-    elif enemy.currentHp == 0 :
+    elif slime.currentHp == 0 :
         gameState = "Win"
     else :
-        turn(mainplayer,enemy,mp)
+        turn(mainplayer,slime,mp)
 
     if gameState == "Win":
         gameState = path.createPath(WIN,mainplayer,mp, gameState)
         
     pygame.display.update()
 
-def turn(mainplayer,enemy,mp):
+def turn(mainplayer,slime,mp):
     global action_cooldown
     if mainplayer.turn : 
         action_cooldown = action_cooldown + 1
@@ -68,31 +71,32 @@ def turn(mainplayer,enemy,mp):
         if mainplayer.action == "idle" and action_cooldown >= action_WaitTime :
             if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
                 print("player attack")
-                mainplayer.attack(enemy)
-                print(enemy.currentHp)
+                mainplayer.attack(slime)
+                print(slime.currentHp)
                 action_cooldown = 0
                 mainplayer.turn = False
-                enemy.turn = True
+                slime.turn = True
                 
             if (button2.draw(mp, WIN, WHITE, "Button2", 28, 90 ,37)) and action_cooldown >= action_WaitTime :
                 mainplayer.action = "usingSkill"
         
-    elif enemy.turn :
+    elif slime.turn :
         action_cooldown = action_cooldown + 1
         if action_cooldown >= action_WaitTime:
-            print("enemy attack")
-            enemy.attack(mainplayer)
+            print("slime attack")
+            slime.attackSlime(mainplayer)
             print(mainplayer.currentHp)
             action_cooldown = 0
             mainplayer.turn = True
-            enemy.turn = False    
+            slime.turn = False    
         
     pygame.display.update()
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True
-    mainplayer = player.player(10,10,10,15)
-    enemy = player.player(1,10,10,15)
+    mainplayer = player.player(100,100,10,20)
+    slime = enemy.enemy("slime",80,0,20,200,100)
+    #สร้างมอนเพิ่ม
     mainplayer.turn = True
     while gamRunning:
         clock.tick(FPS)
@@ -102,7 +106,7 @@ def main ():
                 gamRunning = False
                 
         mousePose = pygame.mouse.get_pos()
-        draw_window(mainplayer,enemy,mousePose)
+        draw_window(mainplayer,slime,mousePose)
     pygame.quit()
 
 
