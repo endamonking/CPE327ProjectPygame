@@ -29,7 +29,7 @@ def stage0(WIN, FPS):
     text_surface2 = my_font.render(intro2, False, (255,255,255))
     text_surface3= my_font.render(intro3, False, (255,255,255))
     text_surface4= my_font.render(intro4, False, (255,255,255))
-    button1 = button.button(700,600,button_image, 7)
+    button1 = button.button(400,600,button_image, 7)
 
     clock = pygame.time.Clock()
     gamRunning = True

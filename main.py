@@ -22,10 +22,9 @@ def draw_window(mp):
     WIN.fill(BLACK)
     WIN.blit(background,(0,0))
     current_Time = pygame.time.get_ticks()
-    if button1.draw(mp, WIN, WHITE, "button1", 38, 85, 40):
-        #print("test")
+    if button1.draw(mp, WIN, WHITE, "Start", 38, 85, 40):
         scene_manager.loadStage(0,WIN,60)
-    if button2.draw(mp, WIN, WHITE, "Button2", 38, 85, 40):
+    if button2.draw(mp, WIN, WHITE, "Quit", 38, 85, 40):
         pygame.quit()
 
     pygame.display.update()
