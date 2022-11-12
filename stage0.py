@@ -1,6 +1,7 @@
 import pygame
 import os
 import button
+import scene_manager
 
 BLACK = (0,0,0)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
@@ -13,7 +14,9 @@ def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2,text_surface3,
     WIN.blit(text_surface2, (200,250))
     WIN.blit(text_surface3, (300,350))
     WIN.blit(text_surface4, (400,450))
-    button1.draw(mousePose, WIN, (255,255,255), "NEXT",38)
+    if (button1.draw(mousePose, WIN, (255,255,255), "NEXT",38, 110, 40)):
+        scene_manager.loadStage(1,0,0)
+
     pygame.display.update()
 
 def stage0(WIN, FPS):
@@ -26,7 +29,7 @@ def stage0(WIN, FPS):
     text_surface2 = my_font.render(intro2, False, (255,255,255))
     text_surface3= my_font.render(intro3, False, (255,255,255))
     text_surface4= my_font.render(intro4, False, (255,255,255))
-    button1 = button.button(900,600,button_image,0.3)
+    button1 = button.button(400,600,button_image, 7)
 
     clock = pygame.time.Clock()
     gamRunning = True
