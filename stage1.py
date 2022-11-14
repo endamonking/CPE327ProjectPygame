@@ -49,12 +49,11 @@ def draw_window(mainplayer,slime,mp):
     slime.draw_enemyIdle(WIN,current_Time, 780, 475)
     mainplayer.showHealth(WIN)
     slime.showHealth(WIN)
-    if mainplayer.currentHp == 0 :
+    if mainplayer.currentHp <= 0 :
         gameState = "Lose"
         exit()
-    elif slime.currentHp == 0 :
+    elif slime.currentHp <= 0 :
         gameState = slime.isDead()
-    
     else :
         turn(mainplayer,slime,mp)
 
@@ -65,10 +64,14 @@ def draw_window(mainplayer,slime,mp):
 
 def turn(mainplayer,slime,mp):
     global action_cooldown
+    mainplayer.showMenu(WIN)
+    if action_cooldown == action_WaitTime:
+        mainplayer.showWhat = "nothing" 
+
     if mainplayer.turn : 
         action_cooldown = action_cooldown + 1
         if mainplayer.action == "usingSkill":
-            action_cooldown = mainplayer.showSkill(mp, WIN, WHITE)
+            action_cooldown = mainplayer.showSkill(mp, WIN, WHITE, slime)
         if mainplayer.action == "idle" and action_cooldown >= action_WaitTime :
             if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
                 print("player attack")

@@ -114,7 +114,7 @@ class enemy():
             self.currentHp = 100
             gameStage = "Normal"
             self.death = False
-        elif self.currentHp <=0:
+        elif self.currentHp <= 0:
             self.currentHp = 0
             self.death = True
 
