@@ -53,7 +53,8 @@ def draw_window(mainplayer,slime,mp):
         gameState = "Lose"
         exit()
     elif slime.currentHp == 0 :
-        gameState = "Win"
+        gameState = slime.isDead()
+    
     else :
         turn(mainplayer,slime,mp)
 
@@ -92,11 +93,15 @@ def turn(mainplayer,slime,mp):
         
     pygame.display.update()
 def main ():
+    #monster = []
     clock = pygame.time.Clock()
     gamRunning = True
     mainplayer = player.player(100,100,10,20)
     slime = enemy.enemy("slime",80,0,20,200,100)
     #สร้างมอนเพิ่ม
+    #zombie = enemy.enmy
+    #monster.append(slime)
+    #monster.append(zombie)
     mainplayer.turn = True
     while gamRunning:
         clock.tick(FPS)

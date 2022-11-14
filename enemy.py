@@ -106,3 +106,16 @@ class enemy():
         WIN.blit(text_surface1, (780, 200))
         text_surface2 = my_font.render(currentHP, False, (255,255,255))
         WIN.blit(text_surface2, (880, 200))
+
+    def isDead(self):
+        gameStage = "Win"
+
+        if self.currentHp <= 0 and self.name == "slime":
+            self.currentHp = 100
+            gameStage = "Normal"
+            self.death = False
+        elif self.currentHp <=0:
+            self.currentHp = 0
+            self.death = True
+
+        return gameStage
