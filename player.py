@@ -22,16 +22,21 @@ class player():
         self.currentMp = self.maxMp
         self.defendPoint = defendPoint
         self.attackPoint = attackPoint
+        self.currentAttackPoint = self.attackPoint
+        self.currentDefendPoint = self.defendPoint
+        self.turnLeft = 0
+        self.buffOrNot = False
         self.lastUpdate = pygame.time.get_ticks()
         self.i = 0
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Double Slash", "Headbutt"]
+        self.skillList = ["Roaring", "Headbutt"]
         self.showWhat = "nothing"
+        self.buff = "none"
 
     def getAttackPower(self):
-        return self.attackPoint
+        return self.currentAttackPoint
     def getTurn(self):
         return self.turn
 
@@ -57,14 +62,27 @@ class player():
     def upgrade_stat(self,option):
         match option:
             case 0: #increase maximum HP and MP and heal player
-                print("option 1 increase maximum HP and MP and heal player")
-            case 1: #increase attack power of player 
-                print("option 2 increase attack power")
-            case 2: #increase defend pointof player
-                print("option 3 increase defend power")
+                self.maxHp = self.maxHp + 100
+                self.maxMp = self.maxMp + 75
+
+                self.currentHp = self.currentHp + (self.maxHp / 2)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+                
+                self.currentMp = self.currentMp + (self.maxMp / 2)
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp
+
+            case 1: #increase attack power of player and slightly defend point
+                self.attackPoint = self.attackPoint + 50
+                self.defendPoint = self.defendPoint + 15
+
+            case 2: #increase defend pointof player and slightly maxmimum HP
+                self.defendPoint = self.defendPoint + 30
+                self.maxHp = self.maxHp + 50
                 
     def attack(self,enemy):
-        damaged = self.attackPoint - enemy.currentDefPoint
+        damaged = self.currentAttackPoint - enemy.currentDefPoint
         if damaged <= 0:
             damaged = 0
         
@@ -73,6 +91,7 @@ class player():
             enemy.currentHp = 0
             enemy.death = True
 
+        self.checkDuration()
         return damaged, "player"
 
     def getSkill(self, skillName):
@@ -113,20 +132,21 @@ class player():
         match skillName:
             case "Double Slash":
                 if self.currentMp >= 20:
-                    dmg = (self.attackPoint * 2) - enemy.currentDefPoint
+                    dmg = (self.currentAttackPoint * 2) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
                     
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 20
                     self.turn = False
-                    enemy.turn = True    
+                    enemy.turn = True 
+                    self.checkDuration()   
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
             case "Headbutt":
                 if self.currentMp >= 15:
-                    dmg = self.attackPoint - enemy.currentDefPoint
+                    dmg = self.currentAttackPoint - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
 
@@ -135,13 +155,13 @@ class player():
                     self.currentMp = self.currentMp - 15
                     self.turn = False
                     enemy.turn = True
-                    return dmg, "player"
+                    self.checkDuration()
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
             case "Paralyze":
                 if self.currentMp >= 5:
-                    dmg = (self.attackPoint * 0.5) - enemy.currentDefPoint
+                    dmg = (self.currentAttackPoint * 0.5) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
 
@@ -149,6 +169,7 @@ class player():
                     self.currentMp = self.currentMp - 5
                     self.turn = False
                     enemy.turn = True
+                    self.checkDuration()
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
@@ -160,7 +181,8 @@ class player():
                         self.currentHp = self.maxHp
                     self.currentMp = self.currentMp - 25
                     self.turn = False
-                    enemy.turn = True   
+                    enemy.turn = True  
+                    self.checkDuration() 
                 else:
                     self.showWhat = "noMana"
                 return 0, "player"
@@ -170,14 +192,24 @@ class player():
                 if self.currentMp >= self.maxMp:
                     self.currentMp = self.maxMp     
                 self.turn = False
-                enemy.turn = True       
+                enemy.turn = True  
+                self.checkDuration()     
                 return 0, "player"
             case "Roaring":
-                print("buff")
+                if self.currentMp >= 30:
+                    self.turnLeft = 0
+                    self.buffOrNot = True
+
+                    self.currentAttackPoint = self.attackPoint + (self.attackPoint/2)
+                    self.currentDefendPoint = self.defendPoint + (self.defendPoint/2)
+
+                    self.currentMp = self.currentMp - 30
+                    self.turn = False
+                    enemy.turn = True  
                 return 0, "player"
             case "Fire ball":
                 if self.currentMp >= 35:
-                    dmg = (self.attackPoint * 3) - enemy.currentDefPoint
+                    dmg = (self.currentAttackPoint * 3) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
                     
@@ -185,12 +217,13 @@ class player():
                     self.currentMp = self.currentMp - 35
                     self.turn = False
                     enemy.turn = True
+                    self.checkDuration()
                 else:
                     self.showWhat = "noMana"
                 return 0, "player"
             case "Lighting bolt":
                 if (self.currentMp >= 25):
-                    dmg = (self.attackPoint * 2)
+                    dmg = (self.currentAttackPoint * 2)
                     if dmg <= 0:
                         dmg = 0
                     
@@ -198,6 +231,7 @@ class player():
                     self.currentMp = self.currentMp - 25 
                     self.turn = False
                     enemy.turn = True
+                    self.checkDuration()
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
@@ -217,3 +251,14 @@ class player():
         WIN.blit(text_surface3, (100, 250))
         text_surface4 = my_font.render(currentMP, False, (255,255,255))
         WIN.blit(text_surface4, (200, 250))
+
+    def checkDuration(self):
+        print(self.turnLeft)
+        print(self.buffOrNot)
+        if self.buffOrNot == True:
+            if self.turnLeft >= 2:
+                self.currentAttackPoint = self.attackPoint
+                self.currentDefendPoint = self.defendPoint
+                self.buffOrNot = False
+            else:
+                self.turnLeft = self.turnLeft + 1

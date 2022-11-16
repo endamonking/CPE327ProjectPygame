@@ -76,6 +76,9 @@ def draw_window(mainplayer,monster,mp):
         monster.turn = False
     elif gameState == "Next":
         counter = counter + 1
+        gameState = "Normal"
+        mainplayer.turn = True
+        monster.turn = False
 
     pygame.display.update()
 
@@ -161,14 +164,9 @@ def showDamage(DMG, side, player):
         text_surface = my_font.render(finalText, False, (255,255,255))
         WIN.blit(text_surface, (410,180))
 
-def main ():
-    global counter
-    monster = []
-    clock = pygame.time.Clock()
-    gamRunning = True
-    #order list name hp defend attack xpose ypose 
-    mainplayer = player.player(10000,10000,10,200)
-    slime = enemy.enemy("slime",80,0,20,200,100)
+def createMonster(monster):
+
+    slime = enemy.enemy("slime",8000,0,20,200,100)
     zombie = enemy.enemy("zombie",50,10,30,200,200)
     dragon = enemy.enemy("dragon",200,25,40,360,300)
     werewolf1 = enemy.enemy("werewolf1",200, 40,30, 200, 200)
@@ -181,7 +179,15 @@ def main ():
     monster.append(dragon)
     monster.append(werewolf1)
     monster.append(werewolf2)
-    #monster.append(zombie)
+
+def main ():
+    global counter
+    monster = []
+    clock = pygame.time.Clock()
+    gamRunning = True
+    #order list name hp defend attack xpose ypose 
+    mainplayer = player.player(10000,10000,10,40)
+    createMonster(monster)
     mainplayer.turn = True
     while gamRunning:
         clock.tick(FPS)

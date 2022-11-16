@@ -108,7 +108,7 @@ class enemy():
                 damaged = 0
         
         if self.defendBuff == True:
-            Defi == Defi + 1
+            Defi = Defi + 1
             if Defi >= 4:
                 self.defendBuff = False
                 self.currentDefPoint = self.defendPoint
@@ -139,7 +139,7 @@ class enemy():
                 damaged = 0
         
         if self.defendBuff == True:
-            Defi == Defi + 1
+            Defi = Defi + 1
             if Defi >= 4:
                 self.defendBuff = False
                 self.currentDefPoint = self.defendPoint
@@ -170,7 +170,7 @@ class enemy():
                 damaged = 0
         
         if self.attackBuff == True:
-            atki == atki + 1
+            atki = atki + 1
             if atki >= 4:
                 self.attachBuff = False
                 self.currentAtkPoint = self.attackPoint
@@ -204,8 +204,8 @@ class enemy():
             self.death = False
         elif self.currentHp <= 0 and self.name == "werewolf1":
             print("knight become werewolf")
-            gamestage = "Normal"
-            return gameStage
+            gameStage = "Next"
+            self.death = False
         elif self.currentHp <= 0:
             self.currentHp = 0
             self.death = True
