@@ -49,7 +49,6 @@ def createStory(win, skillName, mp):
     text_surface = my_font.render(text, False, (255,255,255))
     win.blit(text_surface, (100, 200))
 
-
 def displaySkillDescription(skillName, xPose, Ypose, win):
 
     match skillName:
@@ -114,8 +113,9 @@ def randomActiveSkill_AndCheck(player):
 
     return skillList
 
-def createPath(win,player,mp, gameState):
+def createPath(win,player,mp, gameState, counter):
     newGS = "Win"
+    newCounter = counter
 
     text1 = "Choose the upgrade"
     my_font = pygame.font.SysFont("candara",36)
@@ -130,11 +130,11 @@ def createPath(win,player,mp, gameState):
         case 1:
             getActiveSkill(win,player,mp)
         case 2:
-             createStory(win, skillStory,mp)
+            createStory(win, skillStory,mp)
         case 3:
-            newGS = upgradeStatus(win,player,mp)
+            newGS, newCounter = upgradeStatus(win,player,mp, counter)
 
-    return newGS
+    return newGS, newCounter
 
 
 def getPassiveskil(win, player, mp):
@@ -187,7 +187,7 @@ def getActiveSkill(win,player,mp):
             player.getSkill(activeSkillList[2])
             skillStory = activeSkillList[2]
 
-def upgradeStatus(win,player,mp):
+def upgradeStatus(win,player,mp,counter):
     global state
     global i
     global upgradeStatusAlready
@@ -202,13 +202,16 @@ def upgradeStatus(win,player,mp):
             player.upgrade_stat(0)
             state = 0
             i = 0  
+            counter = counter+1
         if Sevent2.draw(mp, win, WHITE, "Increase attack power", 28, 50, 50):
             player.upgrade_stat(1)
             state = 0  
             i = 0  
+            counter = counter+1
         if Sevent3.draw(mp, win, WHITE, "Increase defend power", 28, 50, 50):
             player.upgrade_stat(2)
             state = 0 
             i = 0   
+            counter = counter+1
 
-    return "Normal"
+    return "Normal", counter

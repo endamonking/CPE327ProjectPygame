@@ -27,7 +27,7 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Double Slash", "Restore mana"]
+        self.skillList = ["Double Slash", "Headbutt"]
         self.showWhat = "nothing"
 
     def getAttackPower(self):
@@ -64,7 +64,7 @@ class player():
                 print("option 3 increase defend power")
                 
     def attack(self,enemy):
-        damaged = self.attackPoint - enemy.defendPoint
+        damaged = self.attackPoint - enemy.currentDefPoint
         if damaged <= 0:
             damaged = 0
         
@@ -72,6 +72,8 @@ class player():
         if enemy.currentHp < 0 :
             enemy.currentHp = 0
             enemy.death = True
+
+        return damaged, "player"
 
     def getSkill(self, skillName):
         self.skillList.append(skillName)
@@ -84,6 +86,8 @@ class player():
         yNew = 0
         self.action = "usingSkill"
         action_cooldown = 0
+        dmg = 0
+        side = "player"
 
         #created back button
         backButton = button.button(xButPose, yButPose + yNew, button_image, 6)
@@ -100,26 +104,54 @@ class player():
             if x.draw(mp, WIN, WHITE, self.skillList[index], 28, 60, 37):
                 action_cooldown = 0
                 self.action = "idle"
-                self.useSkill(self.skillList[index], enemy, WIN)
+                dmg, side = self.useSkill(self.skillList[index], enemy, WIN)
     
-        return action_cooldown
+        return action_cooldown, dmg, side
 
     def useSkill(self, skillName, enemy, win):
+        dmg = 0
         match skillName:
             case "Double Slash":
                 if self.currentMp >= 20:
-                    dmg = (self.attackPoint * 2) - enemy.defendPoint
+                    dmg = (self.attackPoint * 2) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
                     
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 20
+                    self.turn = False
+                    enemy.turn = True    
                 else:
                     self.showWhat = "noMana"
+                return dmg, "player"
             case "Headbutt":
-                print("Stun")
+                if self.currentMp >= 15:
+                    dmg = self.attackPoint - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+
+                    enemy.action = "stunned"
+                    enemy.currentHp = enemy.currentHp - dmg
+                    self.currentMp = self.currentMp - 15
+                    self.turn = False
+                    enemy.turn = True
+                    return dmg, "player"
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
             case "Paralyze":
-                print("stun")
+                if self.currentMp >= 5:
+                    dmg = (self.attackPoint * 0.5) - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+
+                    enemy.action = "stunned"
+                    self.currentMp = self.currentMp - 5
+                    self.turn = False
+                    enemy.turn = True
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
             case "Heal":
                 if self.currentMp >= 25:
                     heal = self.attackPoint * 1.5
@@ -131,6 +163,7 @@ class player():
                     enemy.turn = True   
                 else:
                     self.showWhat = "noMana"
+                return 0, "player"
             case "Restore mana":
                 reMana = self.attackPoint * 1.5
                 self.currentMp = self.currentMp + reMana
@@ -138,11 +171,13 @@ class player():
                     self.currentMp = self.maxMp     
                 self.turn = False
                 enemy.turn = True       
+                return 0, "player"
             case "Roaring":
                 print("buff")
+                return 0, "player"
             case "Fire ball":
                 if self.currentMp >= 35:
-                    dmg = (self.attackPoint * 3) - enemy.defendPoint
+                    dmg = (self.attackPoint * 3) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
                     
@@ -152,6 +187,7 @@ class player():
                     enemy.turn = True
                 else:
                     self.showWhat = "noMana"
+                return 0, "player"
             case "Lighting bolt":
                 if (self.currentMp >= 25):
                     dmg = (self.attackPoint * 2)
@@ -164,13 +200,12 @@ class player():
                     enemy.turn = True
                 else:
                     self.showWhat = "noMana"
-
+                return dmg, "player"
 
     def showHealth(self, WIN):
         currentHP  = str(self.currentHp)
         currentMP = str(self.currentMp)
         my_font = pygame.font.SysFont("candara",40)
-
 
         #render text
         text_surface1 = my_font.render("HP : ", False, (255,255,255))

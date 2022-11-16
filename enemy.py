@@ -8,6 +8,8 @@ import random
 #load asset
 BLACK = (0,0,0) 
 animation_cooldown = 500
+blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
+
 
 #enemy class
 class enemy():
@@ -16,13 +18,17 @@ class enemy():
         self.maxHp = maxHp
         self.currentHp = self.maxHp
         self.defendPoint = defendPoint
+        self.currentDefPoint = self.defendPoint
         self.attackPoint = attackPoint
+        self.currentAtkPoint = self.attackPoint
         self.lastUpdate = pygame.time.get_ticks()
         self.i = 0
         self.enemy_image = pygame.image.load(f'Asset/{self.name}/0.png')
         self.enemy_image = pygame.transform.scale(self.enemy_image, (xScale, yScale))
         self.turn = False
         self.death = False
+        self.defendBuff = False
+        self.attackBuff = False
         self.action = "idle"
         self.skillList = []
 
@@ -32,18 +38,19 @@ class enemy():
     def getTurn(self):
         return self.turn
 
-    def draw_enemyIdle(self,WIN, currentTime, Xpose, Ypose):
+    def draw_enemyIdle(self,WIN, currentTime, Xpose, Ypose, divide):
         if (currentTime - self.lastUpdate >= animation_cooldown):
             self.lastUpdate = currentTime
             if self.i < 1:
                 self.i = self.i+1
             else:
                 self.i = 0
-        WIN.blit(self.enemy_image, (Xpose, Ypose), ((self.i * 100), 0, 100, 300)) #width come from total width / total frame
+        WIN.blit(self.enemy_image, (Xpose, Ypose), ((self.i * divide), 0, divide, 300)) #width come from total width / total frame
 
     #slime skill
     def attackSlime(self,enemy):
         rand = random.randint(1,10)
+        damaged = 0
         if rand < 2:
             self.currentHp = self.maxHp
             print("enemy heal")
@@ -58,9 +65,12 @@ class enemy():
                 enemy.currentHp = 0
                 enemy.death = True
 
+        return damaged, "monster"
+
     #Zombie skill
     def attackZombie(self,enemy):
         rand = random.randint(1,10)
+        damaged = 0
         if rand < 3:
             damaged = self.attackPoint*2 - enemy.defendPoint
             print("enemy double attack")
@@ -76,30 +86,105 @@ class enemy():
         if enemy.currentHp < 0 :
             enemy.currentHp = 0
             enemy.death = True
+        return damaged, "monster"
 
-    #Werewolf skill 1 
-    def attackZombie(self,enemy):
+    #dragon skill  
+    def attackDragon(self,enemy):
+        rand = random.randint(1,100)
+        damaged = 0
+        if rand < 21:
+            print("fire breathing")
+            damaged = self.attackPoint
+            if damaged <= 0:
+                damaged = 0
+        elif 20 < rand < 41:
+            print("Iron skin")
+            self.defendBuff = True
+            Defi = 0
+            self.currentDefPoint = self.defendPoint + 10
+        else:
+            damaged = self.attackPoint - enemy.defendPoint
+            if damaged <= 0:
+                damaged = 0
+        
+        if self.defendBuff == True:
+            Defi == Defi + 1
+            if Defi >= 4:
+                self.defendBuff = False
+                self.currentDefPoint = self.defendPoint
+
+        enemy.currentHp = enemy.currentHp - damaged
+        if enemy.currentHp < 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+    #werewolf1 skill  
+    def attackWerewolf1(self,enemy):
         rand = random.randint(1,10)
-        if rand < 3:
+        damaged = 0
+        if rand < 4:
             damaged = self.attackPoint*2 - enemy.defendPoint
-            print("enemy double attack")
+            print("enemy double slash")
             if damaged <= 0:
                 damaged = 0
-
+        elif 3 < rand < 6:
+            print("Iron skin")
+            self.defendBuff = True
+            Defi = 0
+            self.currentDefPoint = self.defendPoint + 10
         else:
             damaged = self.attackPoint - enemy.defendPoint
             if damaged <= 0:
                 damaged = 0
         
+        if self.defendBuff == True:
+            Defi == Defi + 1
+            if Defi >= 4:
+                self.defendBuff = False
+                self.currentDefPoint = self.defendPoint
+
         enemy.currentHp = enemy.currentHp - damaged
         if enemy.currentHp < 0 :
             enemy.currentHp = 0
             enemy.death = True
+        return damaged, "monster"
+
+        #werewolf2 skill  
+    def attackWerewolf2(self,enemy):
+        rand = random.randint(1,10)
+        damaged = 0
+        if rand < 4:
+            damaged = self.currentAtkPoint*2 - enemy.defendPoint
+            print("enemy double slash")
+            if damaged <= 0:
+                damaged = 0
+        elif 3 < rand < 6:
+            print("Iron skin")
+            self.attackBuff = True
+            atki = 0
+            self.currentAtkPoint = self.attackPoint + 20
+        else:
+            damaged = self.currentAtkPoint - enemy.defendPoint
+            if damaged <= 0:
+                damaged = 0
+        
+        if self.attackBuff == True:
+            atki == atki + 1
+            if atki >= 4:
+                self.attachBuff = False
+                self.currentAtkPoint = self.attackPoint
+                
+        enemy.currentHp = enemy.currentHp - damaged
+        if enemy.currentHp < 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
 
     def showHealth(self, WIN):
         currentHP  = str(self.currentHp)
         my_font = pygame.font.SysFont("candara",40)
-
 
         #render text
         text_surface1 = my_font.render("HP : ", False, (255,255,255))
@@ -110,12 +195,31 @@ class enemy():
     def isDead(self):
         gameStage = "Win"
 
-        if self.currentHp <= 0 and self.name == "slime":
-            self.currentHp = 100
-            gameStage = "Normal"
+        if self.currentHp <= 0 and self.name == "zombie":
+            rand = random.randint(1,100)
+            if rand < 1:
+                print("enemy revive with chance 50%")
+                self.currentHp = self.maxHp
+                gameStage = "Normal"
             self.death = False
+        elif self.currentHp <= 0 and self.name == "werewolf1":
+            print("knight become werewolf")
+            gamestage = "Normal"
+            return gameStage
         elif self.currentHp <= 0:
             self.currentHp = 0
             self.death = True
 
         return gameStage
+
+    def showMonsterStatus(self,win):
+        if self.action == "stunned":
+            blackScreen.set_alpha(128)
+            win.blit(blackScreen, (780,170))
+
+            text = "stunning"
+            my_font = pygame.font.SysFont("candara",36)
+            text_surface = my_font.render(text, False, (255,255,255))
+            win.blit(text_surface, (780,180))
+
+
