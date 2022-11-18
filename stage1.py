@@ -4,6 +4,8 @@ import button
 import player
 import path
 import enemy
+import scene_manager
+
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
@@ -64,7 +66,7 @@ def draw_window(mainplayer,monster,mp):
     monster.showHealth(WIN)
     if mainplayer.currentHp <= 0 :
         gameState = "Lose"
-        exit()
+        scene_manager.loadStage(2,WIN,60)
     elif monster.currentHp <= 0 :
         gameState = monster.isDead()
     else :
@@ -147,7 +149,7 @@ def turn(mainplayer,monster,mp):
 
 def showDamage(DMG, side, player):
 
-    if side == "player" and player.showWhat == "nothing":
+    if side == "player" and player.showWhat == "nothing" and DMG != 0:
         sDMG = str(DMG)
         blackScreen.set_alpha(128)
         WIN.blit(blackScreen, (400,170))
@@ -155,7 +157,7 @@ def showDamage(DMG, side, player):
         my_font = pygame.font.SysFont("candara",36)
         text_surface = my_font.render(finalText, False, (255,255,255))
         WIN.blit(text_surface, (410,180))
-    elif side == "monster":
+    elif side == "monster" and DMG != 0 :
         sDMG = str(DMG)
         blackScreen.set_alpha(128)
         WIN.blit(blackScreen, (400,170))
@@ -188,7 +190,7 @@ def main ():
     clock = pygame.time.Clock()
     gamRunning = True
     #order list name hp defend attack xpose ypose 
-    mainplayer = player.player(10000,10000,10,40)
+    mainplayer = player.player(200,10000,0,40)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:

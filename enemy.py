@@ -64,19 +64,10 @@ class enemy():
             regen_sound = mixer.Sound(r'sound effect\Slime\regenerate.mp3')
             regen_sound.set_volume(1)
             regen_sound.play()
-
-        elif rand >= 2:
-            damaged = self.attackPoint - enemy.defendPoint
-            attack = mixer.Sound(r'sound effect\Slime\attack.mp3')
-            attack.set_volume(0.8)
-            attack.play()
-            if damaged <= 0:
-                damaged = 0
             enemy.currentHp = enemy.currentHp - damaged
             if enemy.currentHp < 0 :
                 enemy.currentHp = 0
-                enemy.death = True
-
+                enemy.death = True            
         return damaged, "monster"
 
     #Zombie skill
@@ -89,10 +80,8 @@ class enemy():
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
             attack.set_volume(0.8)
             attack.play()
-
             if damaged <= 0:
                 damaged = 0
-
         else:
             damaged = self.attackPoint - enemy.defendPoint
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
@@ -100,7 +89,7 @@ class enemy():
             attack.play()
             if damaged <= 0:
                 damaged = 0
-        
+
         enemy.currentHp = enemy.currentHp - damaged
         if enemy.currentHp < 0 :
             enemy.currentHp = 0
