@@ -77,12 +77,14 @@ def displaySkillDescription(skillName, xPose, Ypose, win):
 def randomActiveSkill_AndCheck(player):
     randoming = True
     while randoming:
+        dupe = True
+        skillList = []
+        number = random.sample(range(8), 3)
         if len(player.skillList) >=4:
             print("you cannot have skill more than 4")
             randoming = False
+            return skillList
 
-        dupe = True
-        skillList = []
         number = random.sample(range(8), 3)
         for a in number:
             match a:
@@ -106,6 +108,7 @@ def randomActiveSkill_AndCheck(player):
         for b in skillList:
             for c in player.skillList:
                 if b == c:
+                    print("0")
                     dupe = False
 
         if dupe == True:
@@ -161,6 +164,13 @@ def getActiveSkill(win,player,mp):
     if activeSkillAlready == False:
         activeSkillList = randomActiveSkill_AndCheck(player)
         activeSkillAlready = True
+
+    if len(activeSkillList) == 0:
+        state = 3
+        i = 0
+        activeSkillAlready = False
+        print("empty list")
+        pass
 
     if i >= 60: 
         displaySkillDescription(activeSkillList[0], 100,180,win)

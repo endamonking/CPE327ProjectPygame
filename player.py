@@ -31,7 +31,7 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Roaring", "Headbutt"]
+        self.skillList = ["Roaring", "Headbutt","Heal"]
         self.showWhat = "nothing"
         self.buff = "none"
 
