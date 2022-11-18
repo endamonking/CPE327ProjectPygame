@@ -4,12 +4,15 @@ from pickle import FALSE
 import pygame
 import os
 import random
+from pygame import mixer
 
+# Background music
+pygame.mixer.init()
+pygame.mixer.pre_init(44100,16,2,4096)
 #load asset
 BLACK = (0,0,0) 
 animation_cooldown = 500
 blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
-
 
 #enemy class
 class enemy():
@@ -54,12 +57,21 @@ class enemy():
         if rand < 2:
             self.currentHp = self.maxHp
             print("enemy heal")
-
         elif rand >= 2:
             damaged = self.attackPoint - enemy.defendPoint
             if damaged <= 0:
                 damaged = 0
-        
+            regen_sound = mixer.Sound(r'sound effect\Slime\regenerate.mp3')
+            regen_sound.set_volume(1)
+            regen_sound.play()
+
+        elif rand >= 2:
+            damaged = self.attackPoint - enemy.defendPoint
+            attack = mixer.Sound(r'sound effect\Slime\attack.mp3')
+            attack.set_volume(0.8)
+            attack.play()
+            if damaged <= 0:
+                damaged = 0
             enemy.currentHp = enemy.currentHp - damaged
             if enemy.currentHp < 0 :
                 enemy.currentHp = 0
@@ -74,11 +86,18 @@ class enemy():
         if rand < 3:
             damaged = self.attackPoint*2 - enemy.defendPoint
             print("enemy double attack")
+            attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
+            attack.set_volume(0.8)
+            attack.play()
+
             if damaged <= 0:
                 damaged = 0
 
         else:
             damaged = self.attackPoint - enemy.defendPoint
+            attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
+            attack.set_volume(0.8)
+            attack.play()
             if damaged <= 0:
                 damaged = 0
         
@@ -87,17 +106,22 @@ class enemy():
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
-
     #dragon skill  
     def attackDragon(self,enemy):
         rand = random.randint(1,100)
         damaged = 0
         if rand < 21:
+            fire_ball = mixer.Sound(r'sound effect\Dragon\fire.mp3')
+            fire_ball.set_volume(0.8)
+            fire_ball.play()
             print("fire breathing")
             damaged = self.attackPoint
             if damaged <= 0:
                 damaged = 0
         elif 20 < rand < 41:
+            iron_skill = mixer.Sound(r'sound effect\Dragon\skin.mp3')
+            iron_skill.set_volume(0.8)
+            iron_skill.play()
             print("Iron skin")
             self.defendBuff = True
             Defi = 0
@@ -106,7 +130,9 @@ class enemy():
             damaged = self.attackPoint - enemy.defendPoint
             if damaged <= 0:
                 damaged = 0
-        
+            attack = mixer.Sound(r'sound effect\Dragon\attack.mp3')
+            attack.set_volume(0.8)
+            attack.play()
         if self.defendBuff == True:
             Defi = Defi + 1
             if Defi >= 4:
@@ -181,7 +207,6 @@ class enemy():
             enemy.death = True
         return damaged, "monster"
 
-
     def showHealth(self, WIN):
         currentHP  = str(self.currentHp)
         my_font = pygame.font.SysFont("candara",40)
@@ -198,6 +223,9 @@ class enemy():
         if self.currentHp <= 0 and self.name == "zombie":
             rand = random.randint(1,100)
             if rand < 1:
+                regen = mixer.Sound(r'sound effect\Zombie\revive.mp3')
+                regen.set_volume(0.8)
+                regen.play()
                 print("enemy revive with chance 50%")
                 self.currentHp = self.maxHp
                 gameStage = "Normal"

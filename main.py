@@ -1,8 +1,14 @@
-
 import pygame
 import button
 import os
 import scene_manager
+
+# Background music
+pygame.mixer.init()
+pygame.mixer.pre_init(44100,16,2,4096)
+pygame.mixer.music.load(os.path.join('sound effect','background','background music.mp3'))
+pygame.mixer.music.set_volume(0.6)
+pygame.mixer.music.play(-1)
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)

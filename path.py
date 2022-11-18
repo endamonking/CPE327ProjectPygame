@@ -223,5 +223,5 @@ def upgradeStatus(win,player,mp,counter):
             state = 0 
             i = 0   
             counter = counter+1
-
-    return "Normal", counter
+    
+    return "Normal", counter 

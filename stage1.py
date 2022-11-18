@@ -168,6 +168,8 @@ def createMonster(monster):
 
     slime = enemy.enemy("slime",80,0,20,200,100)
     zombie = enemy.enemy("zombie",50,10,30,200,200)
+    slime = enemy.enemy("slime",50,0,20,200,100)
+    zombie = enemy.enemy("zombie",100,10,30,200,200)
     dragon = enemy.enemy("dragon",200,25,40,360,300)
     werewolf1 = enemy.enemy("werewolf1",200, 40,30, 200, 200)
     werewolf2 = enemy.enemy("werewolf2",300, 10,50, 200, 200)
