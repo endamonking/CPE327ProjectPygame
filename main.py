@@ -21,7 +21,8 @@ pygame.display.set_caption("Demon's tower")
 #ASSET
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 button1 = button.button(400, 352, button_image, 7)
-button2 = button.button(400, 482, button_image, 7)
+button2 = button.button(400, 582, button_image, 7)
+button3 = button.button(400, 460, button_image, 7)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
 
 def draw_window(mp):
@@ -30,6 +31,8 @@ def draw_window(mp):
     current_Time = pygame.time.get_ticks()
     if button1.draw(mp, WIN, WHITE, "Start", 38, 85, 40):
         scene_manager.loadStage(0,WIN,60)
+    if button3.draw(mp, WIN, WHITE, "How to play", 30, 75, 40):
+        scene_manager.loadStage(4,WIN,60)
     if button2.draw(mp, WIN, WHITE, "Quit", 38, 85, 40):
         pygame.quit()
 

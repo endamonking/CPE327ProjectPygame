@@ -36,7 +36,7 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Roaring", "Headbutt"]
+        self.skillList = ["Heal", "Headbutt"]
         self.showWhat = "nothing"
         self.buff = "none"
 
@@ -196,7 +196,7 @@ class player():
                     self.currentHp = self.currentHp + heal
                     if self.currentHp >= self.maxHp:
                         self.currentHp = self.maxHp
-                    heal = mixer.Sound(r'Knight\healing.mp3')
+                    heal = mixer.Sound(r'sound effect\Knight\healing.mp3')
                     heal.set_volume(0.5)
                     heal.play()
                     self.currentMp = self.currentMp - 25

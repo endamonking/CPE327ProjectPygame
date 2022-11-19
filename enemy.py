@@ -13,6 +13,8 @@ pygame.mixer.pre_init(44100,16,2,4096)
 BLACK = (0,0,0) 
 animation_cooldown = 500
 blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
+Defi = 0
+atki = 0
 
 #enemy class
 class enemy():
@@ -97,6 +99,8 @@ class enemy():
         return damaged, "monster"
     #dragon skill  
     def attackDragon(self,enemy):
+        global Defi
+        print(Defi)
         rand = random.randint(1,100)
         damaged = 0
         if rand < 21:
@@ -136,6 +140,8 @@ class enemy():
 
     #werewolf1 skill  
     def attackWerewolf1(self,enemy):
+        global Defi
+
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:
@@ -167,6 +173,8 @@ class enemy():
 
         #werewolf2 skill  
     def attackWerewolf2(self,enemy):
+        global atki
+
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:

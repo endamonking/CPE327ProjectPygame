@@ -17,12 +17,16 @@ background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'tit
 
 def createText():
     BigFont = "YOU DEAD" 
+    info = "You have fail to reclaimed the throne of Thermidor Empire. Gameover!"
 
     my_font = pygame.font.SysFont("candara",128)
+    smallFont = pygame.font.SysFont("candara",28)
     text_surface1 = my_font.render(BigFont, False, (255,0,0))
+    text_surface2 = smallFont.render(info,False,WHITE)
 
 
     WIN.blit(text_surface1, (250,140))
+    WIN.blit(text_surface2, (100,400))
 
 def draw_window(mp):
     WIN.fill(BLACK)

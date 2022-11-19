@@ -190,7 +190,7 @@ def main ():
     clock = pygame.time.Clock()
     gamRunning = True
     #order list name hp defend attack xpose ypose 
-    mainplayer = player.player(200,10000,0,40)
+    mainplayer = player.player(10,10000,0,40)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:
