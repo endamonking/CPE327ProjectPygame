@@ -36,7 +36,7 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Heal", "Headbutt"]
+        self.skillList = ["Fire ball", "Headbutt"]
         self.showWhat = "nothing"
         self.buff = "none"
 
@@ -249,7 +249,7 @@ class player():
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
-                return 0, "player"
+                return dmg, "player"
             case "Lighting bolt":
                 if (self.currentMp >= 25):
                     dmg = (self.currentAttackPoint * 2)
