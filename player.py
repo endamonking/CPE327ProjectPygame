@@ -5,6 +5,11 @@ import pygame
 import os
 import button
 
+# Background music
+from pygame import mixer
+pygame.mixer.init()
+pygame.mixer.pre_init(44100,16,2,4096)
+
 #load asset
 BLACK = (0,0,0)
 player_image = pygame.image.load(os.path.join('Asset', 'knight.png'))
@@ -31,9 +36,12 @@ class player():
         self.turn = False
         self.death = False
         self.action = "idle"
-        self.skillList = ["Roaring", "Headbutt"]
+        self.skillList = ["Fire ball", "Headbutt"]
         self.showWhat = "nothing"
         self.buff = "none"
+        self.passiveName = "No"
+        self.passiveLevel = 0
+        self.passiveCounter = 0
 
     def getAttackPower(self):
         return self.currentAttackPoint
@@ -81,8 +89,33 @@ class player():
                 self.defendPoint = self.defendPoint + 30
                 self.maxHp = self.maxHp + 50
                 
+    def passiveActivated(self):
+        print(self.passiveLevel)
+        match self.passiveName:
+            case "Zeus blessing": #while attacking HP
+                self.currentHp = self.currentHp + (self.currentAttackPoint * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Poseidon grace":
+                    self.currentMp = self.currentMp + (self.currentAttackPoint * self.passiveLevel)
+                    if self.currentMp >= self.maxMp:
+                        self.currentMp = self.maxMp
+            case "Divine will": #afterTurn
+                self.currentHp = self.currentHp + (self.maxHp * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Odin absolution":
+                self.currentMp = self.currentMp + (self.maxMp * self.passiveLevel)
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp   
+            case _:
+                pass        
+
     def attack(self,enemy):
         damaged = self.currentAttackPoint - enemy.currentDefPoint
+        attack_sound = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
+        attack_sound.set_volume(0.5)
+        attack_sound.play()
         if damaged <= 0:
             damaged = 0
         
@@ -92,6 +125,7 @@ class player():
             enemy.death = True
 
         self.checkDuration()
+        self.passiveActivated()
         return damaged, "player"
 
     def getSkill(self, skillName):
@@ -135,12 +169,16 @@ class player():
                     dmg = (self.currentAttackPoint * 2) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
-                    
+                    double_slash = mixer.Sound(r'sound effect\Knight\double slash.mp3')
+                    double_slash.set_volume(0.5)
+                    double_slash.play()
+
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 20
                     self.turn = False
                     enemy.turn = True 
                     self.checkDuration()   
+                    self.passiveCounter = 0
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
@@ -149,12 +187,16 @@ class player():
                     dmg = self.currentAttackPoint - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
+                    headbutt = mixer.Sound(r'sound effect\Knight\headbutt.mp3')
+                    headbutt.set_volume(0.5)
+                    headbutt.play()
 
                     enemy.action = "stunned"
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 15
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -164,11 +206,15 @@ class player():
                     dmg = (self.currentAttackPoint * 0.5) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
+                    paralyze = mixer.Sound(r'sound effect\Knight\paralyze.mp3')
+                    paralyze.set_volume(0.5)
+                    paralyze.play()
 
                     enemy.action = "stunned"
                     self.currentMp = self.currentMp - 5
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -179,9 +225,13 @@ class player():
                     self.currentHp = self.currentHp + heal
                     if self.currentHp >= self.maxHp:
                         self.currentHp = self.maxHp
+                    heal = mixer.Sound(r'sound effect\Knight\healing.mp3')
+                    heal.set_volume(0.5)
+                    heal.play()
                     self.currentMp = self.currentMp - 25
                     self.turn = False
                     enemy.turn = True  
+                    self.passiveCounter = 0
                     self.checkDuration() 
                 else:
                     self.showWhat = "noMana"
@@ -190,9 +240,13 @@ class player():
                 reMana = self.attackPoint * 1.5
                 self.currentMp = self.currentMp + reMana
                 if self.currentMp >= self.maxMp:
-                    self.currentMp = self.maxMp     
+                    self.currentMp = self.maxMp
+                restore_mana = mixer.Sound(r'sound effect\Knight\restore mana.mp3')
+                restore_mana.set_volume(0.5)
+                restore_mana.play()     
                 self.turn = False
                 enemy.turn = True  
+                self.passiveCounter = 0
                 self.checkDuration()     
                 return 0, "player"
             case "Roaring":
@@ -203,9 +257,13 @@ class player():
                     self.currentAttackPoint = self.attackPoint + (self.attackPoint/2)
                     self.currentDefendPoint = self.defendPoint + (self.defendPoint/2)
 
+                    roar = mixer.Sound(r'sound effect\Knight\roaring.mp3')
+                    roar.set_volume(0.5)
+                    roar.play()
                     self.currentMp = self.currentMp - 30
                     self.turn = False
-                    enemy.turn = True  
+                    enemy.turn = True
+                    self.passiveCounter = 0  
                 return 0, "player"
             case "Fire ball":
                 if self.currentMp >= 35:
@@ -213,24 +271,31 @@ class player():
                     if dmg <= 0:
                         dmg = 0
                     
+                    fire_ball = mixer.Sound(r'sound effect\Knight\fire ball.mp3')
+                    fire_ball.set_volume(0.5)
+                    fire_ball.play()
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 35
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
-                return 0, "player"
+                return dmg, "player"
             case "Lighting bolt":
                 if (self.currentMp >= 25):
                     dmg = (self.currentAttackPoint * 2)
                     if dmg <= 0:
                         dmg = 0
-                    
+                    lighting = mixer.Sound(r'sound effect\Knight\lighting.mp3')
+                    lighting.set_volume(0.5)
+                    lighting.play()
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 25 
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
