@@ -34,11 +34,14 @@ class player():
         self.lastUpdate = pygame.time.get_ticks()
         self.i = 0
         self.turn = False
-        self.death = False
+        self.death = False 
         self.action = "idle"
         self.skillList = ["Fire ball", "Headbutt"]
         self.showWhat = "nothing"
         self.buff = "none"
+        self.passiveName = "No"
+        self.passiveLevel = 0
+        self.passiveCounter = 0
 
     def getAttackPower(self):
         return self.currentAttackPoint
@@ -86,6 +89,28 @@ class player():
                 self.defendPoint = self.defendPoint + 30
                 self.maxHp = self.maxHp + 50
                 
+    def passiveActivated(self):
+        print(self.passiveLevel)
+        match self.passiveName:
+            case "Zeus blessing": #while attacking HP
+                self.currentHp = self.currentHp + (self.currentAttackPoint * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Poseidon grace":
+                    self.currentMp = self.currentMp + (self.currentAttackPoint * self.passiveLevel)
+                    if self.currentMp >= self.maxMp:
+                        self.currentMp = self.maxMp
+            case "Divine will": #afterTurn
+                self.currentHp = self.currentHp + (self.maxHp * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Odin absolution":
+                self.currentMp = self.currentMp + (self.maxMp * self.passiveLevel)
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp   
+            case _:
+                pass        
+
     def attack(self,enemy):
         damaged = self.currentAttackPoint - enemy.currentDefPoint
         attack_sound = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
@@ -100,6 +125,7 @@ class player():
             enemy.death = True
 
         self.checkDuration()
+        self.passiveActivated()
         return damaged, "player"
 
     def getSkill(self, skillName):
@@ -152,6 +178,7 @@ class player():
                     self.turn = False
                     enemy.turn = True 
                     self.checkDuration()   
+                    self.passiveCounter = 0
                 else:
                     self.showWhat = "noMana"
                 return dmg, "player"
@@ -169,6 +196,7 @@ class player():
                     self.currentMp = self.currentMp - 15
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -186,6 +214,7 @@ class player():
                     self.currentMp = self.currentMp - 5
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -202,6 +231,7 @@ class player():
                     self.currentMp = self.currentMp - 25
                     self.turn = False
                     enemy.turn = True  
+                    self.passiveCounter = 0
                     self.checkDuration() 
                 else:
                     self.showWhat = "noMana"
@@ -216,6 +246,7 @@ class player():
                 restore_mana.play()     
                 self.turn = False
                 enemy.turn = True  
+                self.passiveCounter = 0
                 self.checkDuration()     
                 return 0, "player"
             case "Roaring":
@@ -231,7 +262,8 @@ class player():
                     roar.play()
                     self.currentMp = self.currentMp - 30
                     self.turn = False
-                    enemy.turn = True  
+                    enemy.turn = True
+                    self.passiveCounter = 0  
                 return 0, "player"
             case "Fire ball":
                 if self.currentMp >= 35:
@@ -246,6 +278,7 @@ class player():
                     self.currentMp = self.currentMp - 35
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -262,6 +295,7 @@ class player():
                     self.currentMp = self.currentMp - 25 
                     self.turn = False
                     enemy.turn = True
+                    self.passiveCounter = 0
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"

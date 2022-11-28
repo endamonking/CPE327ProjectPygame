@@ -12,7 +12,11 @@ i = 0
 activeSkillAlready = False
 activeSkillList = []
 upgradeStatusAlready = False
+passiveSkillAlready = False
+passiveSkillList = []
+passiveLevelList = []
 skillStory = ""
+b = 0
 
 
 def createStory(win, skillName, mp):
@@ -48,6 +52,7 @@ def createStory(win, skillName, mp):
     my_font = pygame.font.SysFont("candara",18)
     text_surface = my_font.render(text, False, (255,255,255))
     win.blit(text_surface, (100, 200))
+    
 
 def displaySkillDescription(skillName, xPose, Ypose, win):
 
@@ -68,6 +73,14 @@ def displaySkillDescription(skillName, xPose, Ypose, win):
             text = "Deal massive damage"
         case "Lighting bolt":
             text = "Deal damage to the enemy"
+        case "Zeus blessing": #while attacking HP
+            text = "Hp recover when use normal attack"
+        case "Poseidon grace":
+            text = "Mp recover when use normal attack"
+        case "Divine will": #afterTurn
+            text = "Hp recover at start of your turn"
+        case "Odin absolution":
+            text = "Mp recover at start of your turn"
     
     my_font = pygame.font.SysFont("candara",36)
     text_surface = my_font.render(text, False, (255,255,255))
@@ -79,7 +92,7 @@ def randomActiveSkill_AndCheck(player):
     while randoming:
         dupe = True
         skillList = []
-        number = random.sample(range(8), 3)
+
         if len(player.skillList) >=4:
             print("you cannot have skill more than 4")
             randoming = False
@@ -116,6 +129,30 @@ def randomActiveSkill_AndCheck(player):
 
     return skillList
 
+def randomPassiveSkill():
+    randoming = True
+    while randoming:
+        skillList = []
+        levelList = []
+
+        number = random.sample(range(4), 3)
+        for a in number:
+            match a:
+                case 0:
+                    skillList.append("Zeus blessing")
+                    levelList.append(0.1)
+                case 1:
+                    skillList.append("Poseidon grace")
+                    levelList.append(0.1)
+                case 2:
+                    skillList.append("Divine will")
+                    levelList.append(0.05)
+                case 3:
+                    skillList.append("Odin absolution")
+                    levelList.append(0.05)
+
+        return skillList, levelList
+
 def createPath(win,player,mp, gameState, counter):
     newGS = "Win"
     newCounter = counter
@@ -142,12 +179,61 @@ def createPath(win,player,mp, gameState, counter):
 
 def getPassiveskil(win, player, mp):
     global state
-    event1 = button.button(600, 100, button_image, 6)
-    event2 = button.button(600, 200, button_image, 6)
-    event3 = button.button(600, 300, button_image, 6)
+    global b
+    global passiveSkillAlready
+    global passiveSkillList
+    global passiveLevelList
+    global i
+
+    i = i +1
+    event1 = button.button(700, 150, button_image, 6)
+    event2 = button.button(700, 350, button_image, 6)
+    event3 = button.button(700, 550, button_image, 6)
+
+    if passiveSkillAlready == False:
+        passiveSkillList, passiveLevelList = randomPassiveSkill()
+        passiveSkillAlready = True
     
-    print("ehe")
-    state = 1
+    if i >= 60:
+        if b == 0:
+            displaySkillDescription(passiveSkillList[0], 100,180,win)
+            if event1.draw(mp, win, WHITE, passiveSkillList[0], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[0]
+                player.passiveLevel = passiveLevelList[0]
+                b = b +1
+                
+            displaySkillDescription(passiveSkillList[1], 100,380,win)
+            if event2.draw(mp, win, WHITE, passiveSkillList[1], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[1]
+                player.passiveLevel = passiveLevelList[1]
+                b = b +1
+            
+            displaySkillDescription(passiveSkillList[2], 100,580,win)
+            if event3.draw(mp, win, WHITE, passiveSkillList[2], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[2]
+                player.passiveLevel = passiveLevelList[2]
+                b = b +1
+        else:
+            match player.passiveName:
+                case "Zeus blessing": #while attacking HP
+                    player.passiveLevel = player.passiveLevel + 0.1
+                case "Poseidon grace":
+                    player.passiveLevel = player.passiveLevel + 0.1
+                case "Divine will": #afterTurn
+                    player.passiveLevel = player.passiveLevel + 0.05
+                case "Odin absolution":
+                    player.passiveLevel = player.passiveLevel + 0.05
+            i = 0
+            state = 1
 
 def getActiveSkill(win,player,mp):
     global state
@@ -225,3 +311,21 @@ def upgradeStatus(win,player,mp,counter):
             counter = counter+1
     
     return "Normal", counter 
+
+def reset():
+    global state 
+    global i 
+    global activeSkillAlready 
+    global upgradeStatusAlready 
+    global passiveSkillAlready 
+    global skillStory 
+    global b 
+
+    state = 0
+    i = 0
+    activeSkillAlready = False
+    upgradeStatusAlready = False
+    passiveSkillAlready = False
+    skillStory = ""
+    b = 0
+

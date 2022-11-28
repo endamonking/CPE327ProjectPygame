@@ -30,11 +30,11 @@ def createText():
 
 def draw_window(mp):
     WIN.fill(BLACK)
-    toTile = button.button(400,600,button_image, 7)
+    toTile = button.button(100,600,button_image, 6)
     current_Time = pygame.time.get_ticks()
 
     createText()
-    if toTile.draw(mp,WIN,BLACK,"To title",28,95,45):
+    if toTile.draw(mp,WIN,BLACK,"To title",28,85,35):
         scene_manager.loadStage(3,WIN,60)
     pygame.display.update()
 

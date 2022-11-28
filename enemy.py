@@ -13,8 +13,10 @@ pygame.mixer.pre_init(44100,16,2,4096)
 BLACK = (0,0,0) 
 animation_cooldown = 500
 blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
+boss_effect = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'boss_effect.png')), (200, 200))
 Defi = 0
 atki = 0
+counter = 0
 
 #enemy class
 class enemy():
@@ -35,7 +37,9 @@ class enemy():
         self.defendBuff = False
         self.attackBuff = False
         self.action = "idle"
+        self.casting = False
         self.skillList = []
+        self.revi = 0
 
     def getAttackPower(self):
         return self.attackPoint
@@ -52,6 +56,15 @@ class enemy():
                 self.i = 0
         WIN.blit(self.enemy_image, (Xpose, Ypose), ((self.i * divide), 0, divide, 300)) #width come from total width / total frame
 
+    def draw_effect(self,WIN, currentTime, Xpose, Ypose, divide):
+        if (currentTime - self.lastUpdate >= animation_cooldown):
+            self.lastUpdate = currentTime
+            if self.i < 2:
+                self.i = self.i+1
+            else:
+                self.i = 0
+        WIN.blit(boss_effect, (Xpose, Ypose), ((self.i * divide), 0, divide, 300)) #width come from total width / total frame
+
     #slime skill
     def attackSlime(self,enemy):
         rand = random.randint(1,10)
@@ -60,14 +73,14 @@ class enemy():
             self.currentHp = self.maxHp
             print("enemy heal")
         elif rand >= 2:
-            damaged = self.attackPoint - enemy.defendPoint
+            damaged = self.attackPoint - enemy.currentDefendPoint
             if damaged <= 0:
                 damaged = 0
             regen_sound = mixer.Sound(r'sound effect\Slime\regenerate.mp3')
             regen_sound.set_volume(1)
             regen_sound.play()
             enemy.currentHp = enemy.currentHp - damaged
-            if enemy.currentHp < 0 :
+            if enemy.currentHp <= 0 :
                 enemy.currentHp = 0
                 enemy.death = True            
         return damaged, "monster"
@@ -77,23 +90,23 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 3:
-            damaged = self.attackPoint*2 - enemy.defendPoint
+            damaged = self.attackPoint*2 - enemy.currentDefendPoint
             print("enemy double attack")
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
-            attack.set_volume(0.8)
+            attack.set_volume(0.5)
             attack.play()
             if damaged <= 0:
                 damaged = 0
         else:
-            damaged = self.attackPoint - enemy.defendPoint
+            damaged = self.attackPoint - enemy.currentDefendPoint
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
-            attack.set_volume(0.8)
+            attack.set_volume(0.5)
             attack.play()
             if damaged <= 0:
                 damaged = 0
 
         enemy.currentHp = enemy.currentHp - damaged
-        if enemy.currentHp < 0 :
+        if enemy.currentHp <= 0 :
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
@@ -120,7 +133,7 @@ class enemy():
             Defi = 0
             self.currentDefPoint = self.defendPoint + 10
         else:
-            damaged = self.attackPoint - enemy.defendPoint
+            damaged = self.attackPoint - enemy.currentDefendPoint
             if damaged <= 0:
                 damaged = 0
             attack = mixer.Sound(r'sound effect\Dragon\attack.mp3')
@@ -133,7 +146,7 @@ class enemy():
                 self.currentDefPoint = self.defendPoint
 
         enemy.currentHp = enemy.currentHp - damaged
-        if enemy.currentHp < 0 :
+        if enemy.currentHp <= 0 :
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
@@ -145,17 +158,26 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:
-            damaged = self.attackPoint*2 - enemy.defendPoint
+            damaged = self.attackPoint*2 - enemy.currentDefendPoint
+            double_slash = mixer.Sound(r'sound effect\Werewolf\double slash1.mp3')
+            double_slash.set_volume(0.8)
+            double_slash.play()
             print("enemy double slash")
             if damaged <= 0:
                 damaged = 0
         elif 3 < rand < 6:
+            iron_skin = mixer.Sound(r'sound effect\Werewolf\iron skin.mp3')
+            iron_skin.set_volume(0.8)
+            iron_skin.play()
             print("Iron skin")
             self.defendBuff = True
             Defi = 0
             self.currentDefPoint = self.defendPoint + 10
         else:
-            damaged = self.attackPoint - enemy.defendPoint
+            attack = mixer.Sound(r'sound effect\Werewolf\attack1.mp3')
+            attack.set_volume(0.8)
+            attack.play()
+            damaged = self.attackPoint - enemy.currentDefendPoint
             if damaged <= 0:
                 damaged = 0
         
@@ -166,7 +188,7 @@ class enemy():
                 self.currentDefPoint = self.defendPoint
 
         enemy.currentHp = enemy.currentHp - damaged
-        if enemy.currentHp < 0 :
+        if enemy.currentHp <= 0 :
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
@@ -178,17 +200,26 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:
-            damaged = self.currentAtkPoint*2 - enemy.defendPoint
+            damaged = self.currentAtkPoint*2 - enemy.currentDefendPoint
+            double_slash = mixer.Sound(r'sound effect\Werewolf\double slash2.mp3')
+            double_slash.set_volume(0.8)
+            double_slash.play()
             print("enemy double slash")
             if damaged <= 0:
                 damaged = 0
         elif 3 < rand < 6:
-            print("Iron skin")
+            print("Hell hound")
+            hell_hound = mixer.Sound(r'sound effect\Werewolf\tansfrom.mp3')
+            hell_hound.set_volume(0.8)
+            hell_hound.play()
             self.attackBuff = True
             atki = 0
             self.currentAtkPoint = self.attackPoint + 20
         else:
-            damaged = self.currentAtkPoint - enemy.defendPoint
+            attack = mixer.Sound(r'sound effect\Werewolf\attack2.mp3')
+            attack.set_volume(0.8)
+            attack.play()
+            damaged = self.currentAtkPoint - enemy.currentDefendPoint
             if damaged <= 0:
                 damaged = 0
         
@@ -199,7 +230,186 @@ class enemy():
                 self.currentAtkPoint = self.attackPoint
                 
         enemy.currentHp = enemy.currentHp - damaged
-        if enemy.currentHp < 0 :
+        if enemy.currentHp <= 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+    #witch skill  
+    def attackWitch(self,enemy):
+        rand = random.randint(1,100)
+        damaged = 0
+        if rand < 21:
+            casting = mixer.Sound(r'sound effect\Witch\casting.mp3')
+            casting.set_volume(0.8)
+            casting.play()
+            print("Death phantom")
+            self.action = "casting"
+        elif 20 < rand < 51:
+            demon_bane = mixer.Sound(r'sound effect\Witch\attack.mp3')
+            demon_bane.set_volume(0.8)
+            demon_bane.play()
+            print("Demon bane")
+            damaged = self.currentAtkPoint
+        elif 50 < rand < 71:
+            draining = mixer.Sound(r'sound effect\Witch\drain mana.mp3')
+            draining.set_volume(0.8)
+            draining.play()
+            print("Draining")
+            damaged = self.currentAtkPoint - enemy.currentDefendPoint
+            if damaged < 0:
+                damaged = 0
+            enemy.currentMp = enemy.currentMp - damaged*0.2
+            if enemy.currentMp < 0:
+                enemy.currentMp = 0
+            self.currentHp = self.currentHp + damaged*0.2
+            if self.currentHp > self.maxHp:
+                self.currenHp = self.maxHp
+        else:
+            attack = mixer.Sound(r'sound effect\Witch\attack.mp3')
+            attack.set_volume(0.8)
+            attack.play()
+            damaged = self.attackPoint - enemy.currentDefendPoint
+            if damaged <= 0:
+                damaged = 0
+
+        enemy.currentHp = enemy.currentHp - damaged
+        if enemy.currentHp <= 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+    #witchCasting
+    def castWitch(self,enemy):
+        self.action = "idle"
+        damaged = self.currentAtkPoint*100000
+        if damaged < 0:
+            damaged = 0
+        enemy.currentHp = enemy.currentHp - damaged
+        if enemy.currentHp <= 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+    #boss phase 1
+    def attackBoss1(self,enemy):
+        rand = random.randint(1,100)
+        damaged = 0
+        global Defi
+        if rand < 21:
+            true_slash = mixer.Sound(r'sound effect\Dark knight P1\true slash.mp3')
+            true_slash.set_volume(0.8)
+            true_slash.play()
+            print("True slash")
+            damaged = self.currentAtkPoint
+        elif 20 < rand < 41:
+            dimond_skin = mixer.Sound(r'sound effect\Dark knight P1\dimond skin.mp3')
+            dimond_skin.set_volume(0.8)
+            dimond_skin.play()
+            print("Dimond skin")
+            self.defendBuff = True
+            Defi = 0
+            self.currentDefPoint = self.defendPoint + 50
+        elif 40 < rand < 66:
+            triple_slash = mixer.Sound(r'sound effect\Dark knight P1\triple slash.mp3')
+            triple_slash.set_volume(0.8)
+            triple_slash.play()
+            print("Triple slash")
+            damaged = self.currentAtkPoint*3 - enemy.currentDefendPoint
+        else:
+            dark_slash = mixer.Sound(r'sound effect\Dark knight P1\dark slash.mp3')
+            dark_slash.set_volume(0.8)
+            dark_slash.play()
+            print("Dark slash")
+            damaged = self.attackPoint - enemy.currentDefendPoint
+            if damaged <= 0:
+                damaged = 0
+
+        if self.defendBuff == True:
+            Defi = Defi + 1
+            if Defi >= 4:
+                self.defendBuff = False
+                self.currentDefPoint = self.defendPoint
+
+        enemy.currentHp = enemy.currentHp - damaged
+        if damaged > 0:
+            self.currentHp = self.currentHp + damaged*0.25
+            print("Drain Health")
+        if enemy.currentHp <= 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+    #boss phase 2
+    def attackBoss2(self,enemy):
+        rand = random.randint(1,100)
+        damaged = 0
+        global Defi
+        if rand < 21:
+            death_phantom = mixer.Sound(r'sound effect\Witch\attack.mp3')
+            death_phantom.set_volume(0.8)
+            death_phantom.play()
+            print("Death phantom")
+            self.action = "casting"
+        elif 20 < rand < 41:
+            true_slash = mixer.Sound(r'sound effect\Dark knight P2\true slash.mp3')
+            true_slash.set_volume(0.8)
+            true_slash.play()
+            print("True slash")
+            damaged = self.currentAtkPoint*1.5
+        elif 40 < rand < 61:
+            dimond_skin = mixer.Sound(r'sound effect\Dark knight P2\dimond skin.mp3')
+            dimond_skin.set_volume(0.8)
+            dimond_skin.play()
+            print("Dimond skin")
+            self.defendBuff = True
+            Defi = 0
+            self.currentDefPoint = self.defendPoint + 50
+        elif 60 < rand < 81:
+            triple_slash = mixer.Sound(r'sound effect\Dark knight P2\triple slash.mp3')
+            triple_slash.set_volume(0.8)
+            triple_slash.play()
+            print("Triple slash")
+            damaged = self.currentAtkPoint*3 - enemy.currentDefendPoint
+        else:
+            print("Phantom bane")
+            print("Draining Mana")
+            drain_mana = mixer.Sound(r'sound effect\Dark knight P2\dark ball.mp3')
+            drain_mana.set_volume(0.8)
+            drain_mana.play()
+            damaged = self.currentAtkPoint - enemy.currentDefendPoint
+            if damaged < 0:
+                damaged = 0
+            enemy.currentMp = enemy.currentMp - damaged*0.2
+            if enemy.currentMp < 0:
+                enemy.currentMp = 0
+
+        if self.defendBuff == True:
+            Defi = Defi + 1
+            if Defi >= 4:
+                self.defendBuff = False
+                self.currentDefPoint = self.defendPoint
+
+        enemy.currentHp = enemy.currentHp - damaged
+        if damaged > 0:
+            self.currentHp = self.currentHp + damaged*0.4
+            if self.currentHp > self.maxHp:
+                self.currentHp = self.maxHp
+            print("Drain Health")
+        if enemy.currentHp <= 0 :
+            enemy.currentHp = 0
+            enemy.death = True
+        return damaged, "monster"
+
+
+        #witchCasting
+    def castBoss(self,enemy):
+        self.action = "idle"
+        damaged = self.currentAtkPoint*10000000
+        if damaged < 0:
+            damaged = 0
+        enemy.currentHp = enemy.currentHp - damaged
+        if enemy.currentHp <= 0 :
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
@@ -216,21 +426,30 @@ class enemy():
 
     def isDead(self):
         gameStage = "Win"
-
+        global counter
         if self.currentHp <= 0 and self.name == "zombie":
-            rand = random.randint(1,100)
-            if rand < 1:
+            if self.revi < 3:
                 regen = mixer.Sound(r'sound effect\Zombie\revive.mp3')
-                regen.set_volume(0.8)
+                regen.set_volume(0.5)
                 regen.play()
-                print("enemy revive with chance 50%")
-                self.currentHp = self.maxHp
+                self.currentHp = self.maxHp*(0.25*(3 - self.revi))
                 gameStage = "Normal"
-            self.death = False
+                self.death = False
+                self.revi = self.revi + 1
+            else:
+                self.death = True
         elif self.currentHp <= 0 and self.name == "werewolf1":
             print("knight become werewolf")
             gameStage = "Next"
             self.death = False
+        elif self.currentHp <= 0 and self.name == "boss1":
+            print("The ture finale boss come")
+            gameStage = "Next"
+            self.death = False
+        elif self.currentHp <= 0 and self.name == "boss2":
+            print("victory")
+            gameStage = "victory"
+            self.death = True
         elif self.currentHp <= 0:
             self.currentHp = 0
             self.death = True
@@ -240,11 +459,21 @@ class enemy():
     def showMonsterStatus(self,win):
         if self.action == "stunned":
             blackScreen.set_alpha(128)
-            win.blit(blackScreen, (780,170))
+            win.blit(blackScreen, (780,100))
 
             text = "stunning"
             my_font = pygame.font.SysFont("candara",36)
             text_surface = my_font.render(text, False, (255,255,255))
-            win.blit(text_surface, (780,180))
+            win.blit(text_surface, (780,110))
+
+        if self.action == "casting":
+            blackScreen.set_alpha(128)
+            win.blit(blackScreen, (780,100))
+
+            text = "casting"
+            my_font = pygame.font.SysFont("candara",36)
+            text_surface = my_font.render(text, False, (255,255,255))
+            win.blit(text_surface, (780,110))
+
 
 
