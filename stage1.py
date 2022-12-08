@@ -35,16 +35,10 @@ dmg = 0
 side = "Nothing"
 bossYet = False
 
-def draw_backgroundaimation(currentTime):
-    global i
-    global BackgroundLastUpdate
-    if (currentTime - BackgroundLastUpdate >= 750):
-        BackgroundLastUpdate = currentTime
-        if i < 2:
-            i = i+1
-        else:
-            i = 0
-    WIN.blit(battlescreen, (0,0), ((i * 1080), 0, 1080, 720)) #width come from total width / total frame
+player_image = pygame.image.load(os.path.join('Asset', 'knight.png'))
+player_image = pygame.transform.scale(player_image, (300, 300))
+
+counter = 0
 
 def draw_bossBackgroundAnimation(currentTime):
     global i
@@ -64,6 +58,7 @@ def draw_window(mainplayer,monster,mp):
     global counter
 
     WIN.fill(BLACK)
+    WIN.blit(background,(0,0))
     current_Time = pygame.time.get_ticks()
 
     if counter < 6:
@@ -247,6 +242,7 @@ def main ():
     mainplayer = player.player(100,100,10,10)
     createMonster(monster)
     mainplayer.turn = True
+
     while gamRunning:
         clock.tick(FPS)
         
@@ -258,7 +254,9 @@ def main ():
         draw_window(mainplayer,monster[counter],mousePose)
     pygame.quit()
 
-
+if __name__ == "__main__":
+    main()
+    
     
         
 

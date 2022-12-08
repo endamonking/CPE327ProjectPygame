@@ -24,6 +24,9 @@ button1 = button.button(400, 352, button_image, 7)
 button2 = button.button(400, 582, button_image, 7)
 button3 = button.button(400, 460, button_image, 7)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
+#player  = player.player(100,100)
+
+
 
 def draw_window(mp):
     WIN.fill(BLACK)
