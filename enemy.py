@@ -4,6 +4,7 @@ from pickle import FALSE
 import pygame
 import os
 import random
+import math
 from pygame import mixer
 
 # Background music
@@ -65,6 +66,9 @@ class enemy():
                 self.i = 0
         WIN.blit(boss_effect, (Xpose, Ypose), ((self.i * divide), 0, divide, 300)) #width come from total width / total frame
 
+    def damageCal(self,attack,defense):
+        return math.floor(10*attack/(defense+1))
+
     #slime skill
     def attackSlime(self,enemy):
         rand = random.randint(1,10)
@@ -73,9 +77,7 @@ class enemy():
             self.currentHp = self.maxHp
             print("enemy heal")
         elif rand >= 2:
-            damaged = self.attackPoint - enemy.currentDefendPoint
-            if damaged <= 0:
-                damaged = 0
+            damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             regen_sound = mixer.Sound(r'sound effect\Slime\regenerate.mp3')
             regen_sound.set_volume(1)
             regen_sound.play()
@@ -90,7 +92,7 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 3:
-            damaged = self.attackPoint*2 - enemy.currentDefendPoint
+            damaged = 2*self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             print("enemy double attack")
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
             attack.set_volume(0.5)
@@ -98,7 +100,7 @@ class enemy():
             if damaged <= 0:
                 damaged = 0
         else:
-            damaged = self.attackPoint - enemy.currentDefendPoint
+            damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             attack = mixer.Sound(r'sound effect\Zombie\attack.mp3')
             attack.set_volume(0.5)
             attack.play()
@@ -121,9 +123,8 @@ class enemy():
             fire_ball.set_volume(0.8)
             fire_ball.play()
             print("fire breathing")
-            damaged = self.attackPoint
-            if damaged <= 0:
-                damaged = 0
+            damaged = self.attackPoint * 1.5
+            
         elif 20 < rand < 41:
             iron_skill = mixer.Sound(r'sound effect\Dragon\skin.mp3')
             iron_skill.set_volume(0.8)
@@ -133,7 +134,7 @@ class enemy():
             Defi = 0
             self.currentDefPoint = self.defendPoint + 10
         else:
-            damaged = self.attackPoint - enemy.currentDefendPoint
+            damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             if damaged <= 0:
                 damaged = 0
             attack = mixer.Sound(r'sound effect\Dragon\attack.mp3')
@@ -158,7 +159,7 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:
-            damaged = self.attackPoint*2 - enemy.currentDefendPoint
+            damaged = 2*self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             double_slash = mixer.Sound(r'sound effect\Werewolf\double slash1.mp3')
             double_slash.set_volume(0.8)
             double_slash.play()
@@ -177,7 +178,7 @@ class enemy():
             attack = mixer.Sound(r'sound effect\Werewolf\attack1.mp3')
             attack.set_volume(0.8)
             attack.play()
-            damaged = self.attackPoint - enemy.currentDefendPoint
+            damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             if damaged <= 0:
                 damaged = 0
         
@@ -200,7 +201,7 @@ class enemy():
         rand = random.randint(1,10)
         damaged = 0
         if rand < 4:
-            damaged = self.currentAtkPoint*2 - enemy.currentDefendPoint
+            damaged = 2*self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             double_slash = mixer.Sound(r'sound effect\Werewolf\double slash2.mp3')
             double_slash.set_volume(0.8)
             double_slash.play()
@@ -219,7 +220,7 @@ class enemy():
             attack = mixer.Sound(r'sound effect\Werewolf\attack2.mp3')
             attack.set_volume(0.8)
             attack.play()
-            damaged = self.currentAtkPoint - enemy.currentDefendPoint
+            damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             if damaged <= 0:
                 damaged = 0
         
@@ -239,19 +240,19 @@ class enemy():
     def attackWitch(self,enemy):
         rand = random.randint(1,100)
         damaged = 0
-        if rand < 21:
+        if rand < 11:
             casting = mixer.Sound(r'sound effect\Witch\casting.mp3')
             casting.set_volume(0.8)
             casting.play()
             print("Death phantom")
             self.action = "casting"
-        elif 20 < rand < 51:
+        elif 10 < rand < 41:
             demon_bane = mixer.Sound(r'sound effect\Witch\attack.mp3')
             demon_bane.set_volume(0.8)
             demon_bane.play()
             print("Demon bane")
             damaged = self.currentAtkPoint
-        elif 50 < rand < 71:
+        elif 40 < rand < 61:
             draining = mixer.Sound(r'sound effect\Witch\drain mana.mp3')
             draining.set_volume(0.8)
             draining.play()
@@ -309,7 +310,7 @@ class enemy():
             print("Dimond skin")
             self.defendBuff = True
             Defi = 0
-            self.currentDefPoint = self.defendPoint + 50
+            self.currentDefPoint = self.defendPoint + 20
         elif 40 < rand < 66:
             triple_slash = mixer.Sound(r'sound effect\Dark knight P1\triple slash.mp3')
             triple_slash.set_volume(0.8)
@@ -345,19 +346,19 @@ class enemy():
         rand = random.randint(1,100)
         damaged = 0
         global Defi
-        if rand < 21:
+        if rand < 11:
             death_phantom = mixer.Sound(r'sound effect\Witch\attack.mp3')
             death_phantom.set_volume(0.8)
             death_phantom.play()
             print("Death phantom")
             self.action = "casting"
-        elif 20 < rand < 41:
+        elif 10 < rand < 31:
             true_slash = mixer.Sound(r'sound effect\Dark knight P2\true slash.mp3')
             true_slash.set_volume(0.8)
             true_slash.play()
             print("True slash")
             damaged = self.currentAtkPoint*1.5
-        elif 40 < rand < 61:
+        elif 30 < rand < 51:
             dimond_skin = mixer.Sound(r'sound effect\Dark knight P2\dimond skin.mp3')
             dimond_skin.set_volume(0.8)
             dimond_skin.play()
@@ -365,7 +366,7 @@ class enemy():
             self.defendBuff = True
             Defi = 0
             self.currentDefPoint = self.defendPoint + 50
-        elif 60 < rand < 81:
+        elif 50 < rand < 71:
             triple_slash = mixer.Sound(r'sound effect\Dark knight P2\triple slash.mp3')
             triple_slash.set_volume(0.8)
             triple_slash.play()

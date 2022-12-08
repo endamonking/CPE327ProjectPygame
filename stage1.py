@@ -136,15 +136,16 @@ def turn(mainplayer,monster,mp):
         side = "Nothing"
 
     if mainplayer.turn :
+        
         if mainplayer.passiveCounter == 0:
             mainplayer.passiveActivated()
             mainplayer.passiveCounter = mainplayer.passiveCounter + 1
 
         action_cooldown = action_cooldown + 1
         if mainplayer.action == "usingSkill":
-            action_cooldown, dmg, side = mainplayer.showSkill(mp, WIN, WHITE, monster)
+            action_cooldown, dmg, side = mainplayer.showSkill(mp, WIN, BLACK, monster)
         if mainplayer.action == "idle" and action_cooldown >= action_WaitTime :
-            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
+            if button1.draw(mp, WIN, BLACK, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
                 print("player attack")
                 dmg, side = mainplayer.attack(monster)
                 print(monster.currentHp)
@@ -153,7 +154,7 @@ def turn(mainplayer,monster,mp):
                 monster.turn = True
                 mainplayer.passiveCounter = 0
                 
-            if (button2.draw(mp, WIN, WHITE, "Skills", 28, 90 ,37)) and action_cooldown >= action_WaitTime :
+            if (button2.draw(mp, WIN, BLACK, "Skills", 28, 90 ,37)) and action_cooldown >= action_WaitTime :
                 mainplayer.action = "usingSkill"
         
     elif monster.turn :
@@ -216,14 +217,14 @@ def showDamage(DMG, side, player):
 
 def createMonster(monster):
 #NAME,hp,Def,Atk,Xpose,Ypose
-    slime = enemy.enemy("slime",50,0,20,200,100)
-    zombie = enemy.enemy("zombie",100,10,30,200,200)
-    dragon = enemy.enemy("dragon",200,25,40,360,300)
-    werewolf1 = enemy.enemy("werewolf1",200, 40,30, 200, 200)
-    werewolf2 = enemy.enemy("werewolf2",300, 10,50, 200, 200)
-    witch = enemy.enemy("witch",400,50,100,200,200)
-    boss1 =enemy.enemy("boss1",15000,100,5000,200,200)
-    boss2 =enemy.enemy("boss2",20000,200,10000,200,200)
+    slime = enemy.enemy("slime",15,10,5,200,100)
+    zombie = enemy.enemy("zombie",20,5,5,200,200)
+    dragon = enemy.enemy("dragon",80,10,15,360,300)
+    werewolf1 = enemy.enemy("werewolf1",50,10,10, 200, 200)
+    werewolf2 = enemy.enemy("werewolf2",80,15,12, 200, 200)
+    witch = enemy.enemy("witch",100,10,30,200,200)
+    boss1 =enemy.enemy("boss1",150,15,40,200,200)
+    boss2 =enemy.enemy("boss2",200,15,50,200,200)
     
     #monster.append = enemy.enemy("zombie",80,0,20,200,100)
     #สร้างมอนเพิ่ม
@@ -243,7 +244,7 @@ def main ():
     clock = pygame.time.Clock()
     gamRunning = True
     #order list name hp defend attack xpose ypose 
-    mainplayer = player.player(100000,10000,0,3000)
+    mainplayer = player.player(100,100,10,10)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:
