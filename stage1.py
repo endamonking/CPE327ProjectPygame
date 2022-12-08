@@ -152,9 +152,9 @@ def turn(mainplayer, monster, mp):
         action_cooldown = action_cooldown + 1
         if mainplayer.action == "usingSkill":
             action_cooldown, dmg, side = mainplayer.showSkill(
-                mp, WIN, WHITE, monster)
+                mp, WIN, BLACK, monster)
         if mainplayer.action == "idle" and action_cooldown >= action_WaitTime:
-            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime:
+            if button1.draw(mp, WIN, BLACK, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime:
                 print("player attack")
                 dmg, side = mainplayer.attack(monster)
                 print(monster.currentHp)
@@ -163,7 +163,7 @@ def turn(mainplayer, monster, mp):
                 monster.turn = True
                 mainplayer.passiveCounter = 0
 
-            if (button2.draw(mp, WIN, WHITE, "Skills", 28, 90, 37)) and action_cooldown >= action_WaitTime:
+            if (button2.draw(mp, WIN, BLACK, "Skills", 28, 90, 37)) and action_cooldown >= action_WaitTime:
                 mainplayer.action = "usingSkill"
 
     elif monster.turn:
