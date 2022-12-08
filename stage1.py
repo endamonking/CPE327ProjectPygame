@@ -7,21 +7,24 @@ import enemy
 import scene_manager
 
 
-WHITE = (255,255,255)
-BLACK = (0,0,0)
-WIDTH = 1080 
-HEIGHT = 720 
-WIN = pygame.display.set_mode((WIDTH,HEIGHT))
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+WIDTH = 1080
+HEIGHT = 720
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 pygame.display.set_caption("Demon's tower")
 
-#ASSET
+# ASSET
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 button1 = button.button(100, 600, button_image, 6)
 button2 = button.button(700, 600, button_image, 6)
-battlescreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'battlescreen.png')), (3240, 720))
-blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
-bossScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'boss_background.png')), (4320, 720))
+battlescreen = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'battlescreen.png')), (3240, 720))
+blackScreen = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
+bossScreen = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'boss_background.png')), (4320, 720))
 
 #global var
 counter = 0
@@ -35,10 +38,19 @@ dmg = 0
 side = "Nothing"
 bossYet = False
 
-player_image = pygame.image.load(os.path.join('Asset', 'knight.png'))
-player_image = pygame.transform.scale(player_image, (300, 300))
 
-counter = 0
+def draw_backgroundaimation(currentTime):
+    global i
+    global BackgroundLastUpdate
+    if (currentTime - BackgroundLastUpdate >= 750):
+        BackgroundLastUpdate = currentTime
+        if i < 2:
+            i = i+1
+        else:
+            i = 0
+    # width come from total width / total frame
+    WIN.blit(battlescreen, (0, 0), ((i * 1080), 0, 1080, 720))
+
 
 def draw_bossBackgroundAnimation(currentTime):
     global i
@@ -51,52 +63,54 @@ def draw_bossBackgroundAnimation(currentTime):
         else:
             i = 0
 
-    WIN.blit(bossScreen, (0,0), ((i * 1080), 0, 1080, 720)) #width come from total width / total frame    
+    # width come from total width / total frame
+    WIN.blit(bossScreen, (0, 0), ((i * 1080), 0, 1080, 720))
 
-def draw_window(mainplayer,monster,mp):
+
+def draw_window(mainplayer, monster, mp):
     global gameState
     global counter
 
     WIN.fill(BLACK)
-    WIN.blit(background,(0,0))
     current_Time = pygame.time.get_ticks()
 
     if counter < 6:
         draw_backgroundaimation(current_Time)
     elif counter >= 6:
         draw_bossBackgroundAnimation(current_Time)
-        
-    mainplayer.draw_playerIdle(WIN,current_Time, 100, 300)
+
+    mainplayer.draw_playerIdle(WIN, current_Time, 100, 300)
     if monster.name == "slime":
-        monster.draw_enemyIdle(WIN,current_Time, 780, 475, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 780, 475, 100)
     elif monster.name == "zombie":
-        monster.draw_enemyIdle(WIN,current_Time, 780, 350, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 780, 350, 100)
     elif monster.name == "dragon":
-        monster.draw_enemyIdle(WIN,current_Time, 750, 300, 180)
+        monster.draw_enemyIdle(WIN, current_Time, 750, 300, 180)
     elif monster.name == "werewolf1" or "werewolf2":
-        monster.draw_enemyIdle(WIN,current_Time, 750, 350, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
     elif monster.name == "witch":
-        monster.draw_enemyIdle(WIN,current_Time, 750, 350, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
     elif monster.name == "boss1":
-        monster.draw_enemyIdle(WIN,current_Time, 750, 350, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
     elif monster.name == "boss2":
-        monster.draw_enemyIdle(WIN,current_Time, 750, 350, 100)
-        monster.draw_effect(WIN,current_Time, 750, 350, 100)
+        monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
+        monster.draw_effect(WIN, current_Time, 750, 350, 100)
 
     mainplayer.showHealth(WIN)
     monster.showHealth(WIN)
-    if mainplayer.currentHp <= 0 :
+    if mainplayer.currentHp <= 0:
         gameState = "Lose"
         counter = 0
         path.reset()
-        scene_manager.loadStage(2,WIN,60)
-    elif monster.currentHp <= 0 :
+        scene_manager.loadStage(2, WIN, 60)
+    elif monster.currentHp <= 0:
         gameState = monster.isDead()
-    else :
-        turn(mainplayer,monster,mp)
+    else:
+        turn(mainplayer, monster, mp)
 
     if gameState == "Win":
-        gameState , counter = path.createPath(WIN,mainplayer,mp, gameState, counter)
+        gameState, counter = path.createPath(
+            WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True
         monster.turn = False
     elif gameState == "Next":
@@ -108,17 +122,17 @@ def draw_window(mainplayer,monster,mp):
         counter = 0
         path.reset()
         gameState = "Normal"
-        scene_manager.loadStage(5,WIN,60)
+        scene_manager.loadStage(5, WIN, 60)
 
     pygame.display.update()
 
-def turn(mainplayer,monster,mp):
+
+def turn(mainplayer, monster, mp):
     global action_cooldown
     global counter
     global stunDuration
     global dmg
     global side
-
 
     if stunDuration == 1:
         stunDuration = 0
@@ -127,20 +141,20 @@ def turn(mainplayer,monster,mp):
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
     if action_cooldown == action_WaitTime:
-        mainplayer.showWhat = "nothing" 
+        mainplayer.showWhat = "nothing"
         side = "Nothing"
 
-    if mainplayer.turn :
-        
+    if mainplayer.turn:
         if mainplayer.passiveCounter == 0:
             mainplayer.passiveActivated()
             mainplayer.passiveCounter = mainplayer.passiveCounter + 1
 
         action_cooldown = action_cooldown + 1
         if mainplayer.action == "usingSkill":
-            action_cooldown, dmg, side = mainplayer.showSkill(mp, WIN, BLACK, monster)
-        if mainplayer.action == "idle" and action_cooldown >= action_WaitTime :
-            if button1.draw(mp, WIN, BLACK, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime :
+            action_cooldown, dmg, side = mainplayer.showSkill(
+                mp, WIN, WHITE, monster)
+        if mainplayer.action == "idle" and action_cooldown >= action_WaitTime:
+            if button1.draw(mp, WIN, WHITE, "Attack", 28, 90, 37) and action_cooldown >= action_WaitTime:
                 print("player attack")
                 dmg, side = mainplayer.attack(monster)
                 print(monster.currentHp)
@@ -148,11 +162,11 @@ def turn(mainplayer,monster,mp):
                 mainplayer.turn = False
                 monster.turn = True
                 mainplayer.passiveCounter = 0
-                
-            if (button2.draw(mp, WIN, BLACK, "Skills", 28, 90 ,37)) and action_cooldown >= action_WaitTime :
+
+            if (button2.draw(mp, WIN, WHITE, "Skills", 28, 90, 37)) and action_cooldown >= action_WaitTime:
                 mainplayer.action = "usingSkill"
-        
-    elif monster.turn :
+
+    elif monster.turn:
         action_cooldown = action_cooldown + 1
         if action_cooldown >= action_WaitTime:
             if monster.action == "idle":
@@ -161,57 +175,59 @@ def turn(mainplayer,monster,mp):
                     dmg, side = monster.attackSlime(mainplayer)
                 elif monster.name == "zombie":
                     dmg, side = monster.attackZombie(mainplayer)
-                elif monster.name =="dragon":
+                elif monster.name == "dragon":
                     dmg, side = monster.attackDragon(mainplayer)
-                elif monster.name =="werewolf1":
+                elif monster.name == "werewolf1":
                     dmg, side = monster.attackWerewolf1(mainplayer)
-                elif monster.name =="werewolf2":
+                elif monster.name == "werewolf2":
                     dmg, side = monster.attackWerewolf2(mainplayer)
-                elif monster.name =="witch":
+                elif monster.name == "witch":
                     dmg, side = monster.attackWitch(mainplayer)
-                elif monster.name =="boss1":
+                elif monster.name == "boss1":
                     dmg, side = monster.attackBoss1(mainplayer)
-                elif monster.name =="boss2":
+                elif monster.name == "boss2":
                     dmg, side = monster.attackBoss2(mainplayer)
                 print(mainplayer.currentHp)
                 action_cooldown = 0
                 mainplayer.turn = True
-                monster.turn = False    
+                monster.turn = False
             elif monster.action == "stunned":
                 print(stunDuration)
                 stunDuration = stunDuration + 1
                 action_cooldown = 0
                 mainplayer.turn = True
-                monster.turn = False    
+                monster.turn = False
             elif monster.action == "casting":
-                if monster.name =="witch":
+                if monster.name == "witch":
                     dmg, side = monster.castWitch(mainplayer)
-                if monster.name =="boss2":
+                if monster.name == "boss2":
                     dmg, side = monster.castBoss(mainplayer)
 
     pygame.display.update()
+
 
 def showDamage(DMG, side, player):
 
     if side == "player" and player.showWhat == "nothing" and DMG != 0:
         sDMG = str(DMG)
         blackScreen.set_alpha(128)
-        WIN.blit(blackScreen, (400,170))
+        WIN.blit(blackScreen, (400, 170))
         finalText = "Player dealt : " + sDMG
-        my_font = pygame.font.SysFont("candara",26)
-        text_surface = my_font.render(finalText, False, (255,255,255))
-        WIN.blit(text_surface, (410,180))
-    elif side == "monster" and DMG != 0 :
+        my_font = pygame.font.SysFont("candara", 26)
+        text_surface = my_font.render(finalText, False, (255, 255, 255))
+        WIN.blit(text_surface, (410, 180))
+    elif side == "monster" and DMG != 0:
         sDMG = str(DMG)
         blackScreen.set_alpha(128)
-        WIN.blit(blackScreen, (400,170))
+        WIN.blit(blackScreen, (400, 170))
         finalText = "Monster dealt : " + sDMG
-        my_font = pygame.font.SysFont("candara",26)
-        text_surface = my_font.render(finalText, False, (255,255,255))
-        WIN.blit(text_surface, (410,180))
+        my_font = pygame.font.SysFont("candara", 26)
+        text_surface = my_font.render(finalText, False, (255, 255, 255))
+        WIN.blit(text_surface, (410, 180))
+
 
 def createMonster(monster):
-#NAME,hp,Def,Atk,Xpose,Ypose
+    # NAME,hp,Def,Atk,Xpose,Ypose
     slime = enemy.enemy("slime",15,10,5,200,100)
     zombie = enemy.enemy("zombie",20,5,5,200,200)
     dragon = enemy.enemy("dragon",80,10,15,360,300)
@@ -220,9 +236,9 @@ def createMonster(monster):
     witch = enemy.enemy("witch",100,10,30,200,200)
     boss1 =enemy.enemy("boss1",150,15,40,200,200)
     boss2 =enemy.enemy("boss2",200,15,50,200,200)
-    
+
     #monster.append = enemy.enemy("zombie",80,0,20,200,100)
-    #สร้างมอนเพิ่ม
+    # สร้างมอนเพิ่ม
     #zombie = enemy.enmy
     monster.append(slime)
     monster.append(zombie)
@@ -233,30 +249,23 @@ def createMonster(monster):
     monster.append(boss1)
     monster.append(boss2)
 
-def main ():
+
+def main():
     global counter
     monster = []
     clock = pygame.time.Clock()
     gamRunning = True
-    #order list name hp defend attack xpose ypose 
-    mainplayer = player.player(100,100,10,10)
+    # order list name hp defend attack xpose ypose
+    mainplayer = player.player(100,100, 10, 10)
     createMonster(monster)
     mainplayer.turn = True
-
     while gamRunning:
         clock.tick(FPS)
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gamRunning = False
-                
+
         mousePose = pygame.mouse.get_pos()
-        draw_window(mainplayer,monster[counter],mousePose)
+        draw_window(mainplayer, monster[counter], mousePose)
     pygame.quit()
-
-if __name__ == "__main__":
-    main()
-    
-    
-        
-
