@@ -5,11 +5,17 @@ import pygame
 import os
 import button
 
+# Background music
+from pygame import mixer
+pygame.mixer.init()
+pygame.mixer.pre_init(44100,16,2,4096)
+
 #load asset
 BLACK = (0,0,0)
 player_image = pygame.image.load(os.path.join('Asset', 'knight.png'))
 player_image = pygame.transform.scale(player_image, (300, 300)) 
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
+blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
 
 animation_cooldown = 500
 
@@ -21,18 +27,37 @@ class player():
         self.currentMp = self.maxMp
         self.defendPoint = defendPoint
         self.attackPoint = attackPoint
+        self.currentAttackPoint = self.attackPoint
+        self.currentDefendPoint = self.defendPoint
+        self.turnLeft = 0
+        self.buffOrNot = False
         self.lastUpdate = pygame.time.get_ticks()
         self.i = 0
         self.turn = False
-        self.death = False
+        self.death = False 
         self.action = "idle"
-        self.skillList = []
+        self.skillList = ["Fire ball", "Headbutt"]
+        self.showWhat = "nothing"
+        self.buff = "none"
+        self.passiveName = "No"
+        self.passiveLevel = 0
+        self.passiveCounter = 0
 
     def getAttackPower(self):
-        return self.attackPoint
+        return self.currentAttackPoint
     def getTurn(self):
         return self.turn
-    
+
+    def showMenu(self,win):
+        if self.showWhat == "noMana":
+            blackScreen.set_alpha(128)
+            win.blit(blackScreen, (400,170))
+
+            text = "Not enough mana"
+            my_font = pygame.font.SysFont("candara",36)
+            text_surface = my_font.render(text, False, (255,255,255))
+            win.blit(text_surface, (410,180))
+
     def draw_playerIdle(self,WIN, currentTime, Xpose, Ypose):
         if (currentTime - self.lastUpdate >= animation_cooldown):
             self.lastUpdate = currentTime
@@ -45,14 +70,52 @@ class player():
     def upgrade_stat(self,option):
         match option:
             case 0: #increase maximum HP and MP and heal player
-                print("option 1 increase maximum HP and MP and heal player")
-            case 1: #increase attack power of player 
-                print("option 2 increase attack power")
-            case 2: #increase defend pointof player
-                print("option 3 increase defend power")
+                self.maxHp = self.maxHp + 100
+                self.maxMp = self.maxMp + 75
+
+                self.currentHp = self.currentHp + (self.maxHp / 2)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
                 
+                self.currentMp = self.currentMp + (self.maxMp / 2)
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp
+
+            case 1: #increase attack power of player and slightly defend point
+                self.attackPoint = self.attackPoint + 50
+                self.defendPoint = self.defendPoint + 15
+
+            case 2: #increase defend pointof player and slightly maxmimum HP
+                self.defendPoint = self.defendPoint + 30
+                self.maxHp = self.maxHp + 50
+                
+    def passiveActivated(self):
+        print(self.passiveLevel)
+        match self.passiveName:
+            case "Zeus blessing": #while attacking HP
+                self.currentHp = self.currentHp + (self.currentAttackPoint * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Poseidon grace":
+                    self.currentMp = self.currentMp + (self.currentAttackPoint * self.passiveLevel)
+                    if self.currentMp >= self.maxMp:
+                        self.currentMp = self.maxMp
+            case "Divine will": #afterTurn
+                self.currentHp = self.currentHp + (self.maxHp * self.passiveLevel)
+                if self.currentHp >= self.maxHp:
+                    self.currentHp = self.maxHp
+            case "Odin absolution":
+                self.currentMp = self.currentMp + (self.maxMp * self.passiveLevel)
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp   
+            case _:
+                pass        
+
     def attack(self,enemy):
-        damaged = self.attackPoint - enemy.defendPoint
+        damaged = self.currentAttackPoint - enemy.currentDefPoint
+        attack_sound = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
+        attack_sound.set_volume(0.5)
+        attack_sound.play()
         if damaged <= 0:
             damaged = 0
         
@@ -61,10 +124,14 @@ class player():
             enemy.currentHp = 0
             enemy.death = True
 
+        self.checkDuration()
+        self.passiveActivated()
+        return damaged, "player"
+
     def getSkill(self, skillName):
         self.skillList.append(skillName)
 
-    def showSkill(self, mp,  WIN, WHITE):
+    def showSkill(self, mp,  WIN, WHITE, enemy):
         skillbuttonlist = []
         i = 0
         xButPose = 400
@@ -72,6 +139,8 @@ class player():
         yNew = 0
         self.action = "usingSkill"
         action_cooldown = 0
+        dmg = 0
+        side = "player"
 
         #created back button
         backButton = button.button(xButPose, yButPose + yNew, button_image, 6)
@@ -85,25 +154,157 @@ class player():
             yNew = yNew - 100
         
         for index, x in enumerate(skillbuttonlist):
-            if x.draw(mp, WIN, WHITE, self.skillList[index], 28, 90, 37):
+            if x.draw(mp, WIN, WHITE, self.skillList[index], 28, 60, 37):
                 action_cooldown = 0
                 self.action = "idle"
-                print(self.skillList[index])
+                dmg, side = self.useSkill(self.skillList[index], enemy, WIN)
     
-        return action_cooldown
+        return action_cooldown, dmg, side
 
-    def useSkill(self, skillName):
+    def useSkill(self, skillName, enemy, win):
+        dmg = 0
         match skillName:
-            case "test1":
-                print("test1")
-            case "test2":
-                print("test2")
+            case "Double Slash":
+                if self.currentMp >= 20:
+                    dmg = (self.currentAttackPoint * 2) - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+                    double_slash = mixer.Sound(r'sound effect\Knight\double slash.mp3')
+                    double_slash.set_volume(0.5)
+                    double_slash.play()
+
+                    enemy.currentHp = enemy.currentHp - dmg
+                    self.currentMp = self.currentMp - 20
+                    self.turn = False
+                    enemy.turn = True 
+                    self.checkDuration()   
+                    self.passiveCounter = 0
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
+            case "Headbutt":
+                if self.currentMp >= 15:
+                    dmg = self.currentAttackPoint - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+                    headbutt = mixer.Sound(r'sound effect\Knight\headbutt.mp3')
+                    headbutt.set_volume(0.5)
+                    headbutt.play()
+
+                    enemy.action = "stunned"
+                    enemy.currentHp = enemy.currentHp - dmg
+                    self.currentMp = self.currentMp - 15
+                    self.turn = False
+                    enemy.turn = True
+                    self.passiveCounter = 0
+                    self.checkDuration()
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
+            case "Paralyze":
+                if self.currentMp >= 5:
+                    dmg = (self.currentAttackPoint * 0.5) - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+                    paralyze = mixer.Sound(r'sound effect\Knight\paralyze.mp3')
+                    paralyze.set_volume(0.5)
+                    paralyze.play()
+
+                    enemy.action = "stunned"
+                    self.currentMp = self.currentMp - 5
+                    self.turn = False
+                    enemy.turn = True
+                    self.passiveCounter = 0
+                    self.checkDuration()
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
+            case "Heal":
+                if self.currentMp >= 25:
+                    heal = self.attackPoint * 1.5
+                    self.currentHp = self.currentHp + heal
+                    if self.currentHp >= self.maxHp:
+                        self.currentHp = self.maxHp
+                    heal = mixer.Sound(r'sound effect\Knight\healing.mp3')
+                    heal.set_volume(0.5)
+                    heal.play()
+                    self.currentMp = self.currentMp - 25
+                    self.turn = False
+                    enemy.turn = True  
+                    self.passiveCounter = 0
+                    self.checkDuration() 
+                else:
+                    self.showWhat = "noMana"
+                return 0, "player"
+            case "Restore mana":
+                reMana = self.attackPoint * 1.5
+                self.currentMp = self.currentMp + reMana
+                if self.currentMp >= self.maxMp:
+                    self.currentMp = self.maxMp
+                restore_mana = mixer.Sound(r'sound effect\Knight\restore mana.mp3')
+                restore_mana.set_volume(0.5)
+                restore_mana.play()     
+                self.turn = False
+                enemy.turn = True  
+                self.passiveCounter = 0
+                self.checkDuration()     
+                return 0, "player"
+            case "Roaring":
+                if self.currentMp >= 30:
+                    self.turnLeft = 0
+                    self.buffOrNot = True
+
+                    self.currentAttackPoint = self.attackPoint + (self.attackPoint/2)
+                    self.currentDefendPoint = self.defendPoint + (self.defendPoint/2)
+
+                    roar = mixer.Sound(r'sound effect\Knight\roaring.mp3')
+                    roar.set_volume(0.5)
+                    roar.play()
+                    self.currentMp = self.currentMp - 30
+                    self.turn = False
+                    enemy.turn = True
+                    self.passiveCounter = 0  
+                return 0, "player"
+            case "Fire ball":
+                if self.currentMp >= 35:
+                    dmg = (self.currentAttackPoint * 3) - enemy.currentDefPoint
+                    if dmg <= 0:
+                        dmg = 0
+                    
+                    fire_ball = mixer.Sound(r'sound effect\Knight\fire ball.mp3')
+                    fire_ball.set_volume(0.5)
+                    fire_ball.play()
+                    enemy.currentHp = enemy.currentHp - dmg
+                    self.currentMp = self.currentMp - 35
+                    self.turn = False
+                    enemy.turn = True
+                    self.passiveCounter = 0
+                    self.checkDuration()
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
+            case "Lighting bolt":
+                if (self.currentMp >= 25):
+                    dmg = (self.currentAttackPoint * 2)
+                    if dmg <= 0:
+                        dmg = 0
+                    lighting = mixer.Sound(r'sound effect\Knight\lighting.mp3')
+                    lighting.set_volume(0.5)
+                    lighting.play()
+                    enemy.currentHp = enemy.currentHp - dmg
+                    self.currentMp = self.currentMp - 25 
+                    self.turn = False
+                    enemy.turn = True
+                    self.passiveCounter = 0
+                    self.checkDuration()
+                else:
+                    self.showWhat = "noMana"
+                return dmg, "player"
 
     def showHealth(self, WIN):
         currentHP  = str(self.currentHp)
         currentMP = str(self.currentMp)
         my_font = pygame.font.SysFont("candara",40)
-
 
         #render text
         text_surface1 = my_font.render("HP : ", False, (255,255,255))
@@ -115,3 +316,14 @@ class player():
         WIN.blit(text_surface3, (100, 250))
         text_surface4 = my_font.render(currentMP, False, (255,255,255))
         WIN.blit(text_surface4, (200, 250))
+
+    def checkDuration(self):
+        print(self.turnLeft)
+        print(self.buffOrNot)
+        if self.buffOrNot == True:
+            if self.turnLeft >= 2:
+                self.currentAttackPoint = self.attackPoint
+                self.currentDefendPoint = self.defendPoint
+                self.buffOrNot = False
+            else:
+                self.turnLeft = self.turnLeft + 1

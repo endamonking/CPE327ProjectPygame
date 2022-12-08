@@ -3,13 +3,6 @@ import button
 import os
 import scene_manager
 
-# Background music
-pygame.mixer.init()
-pygame.mixer.pre_init(44100,16,2,4096)
-pygame.mixer.music.load(os.path.join('sound effect','background','background music.mp3'))
-pygame.mixer.music.set_volume(0.6)
-pygame.mixer.music.play(-1)
-
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 WIDTH = 1080 
@@ -18,24 +11,31 @@ WIN = pygame.display.set_mode((WIDTH,HEIGHT))
 FPS = 60
 pygame.display.set_caption("Demon's tower")
 
-#ASSET
+#asset
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
-button1 = button.button(400, 352, button_image, 7)
-button2 = button.button(400, 582, button_image, 7)
-button3 = button.button(400, 460, button_image, 7)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
+
+def createText():
+    BigFont = "YOU DEAD" 
+    info = "You have fail to reclaimed the throne of Thermidor Empire. Gameover!"
+
+    my_font = pygame.font.SysFont("candara",128)
+    smallFont = pygame.font.SysFont("candara",28)
+    text_surface1 = my_font.render(BigFont, False, (255,0,0))
+    text_surface2 = smallFont.render(info,False,WHITE)
+
+
+    WIN.blit(text_surface1, (250,140))
+    WIN.blit(text_surface2, (100,400))
 
 def draw_window(mp):
     WIN.fill(BLACK)
-    WIN.blit(background,(0,0))
+    toTile = button.button(100,600,button_image, 6)
     current_Time = pygame.time.get_ticks()
-    if button1.draw(mp, WIN, WHITE, "Start", 38, 85, 40):
-        scene_manager.loadStage(0,WIN,60)
-    if button3.draw(mp, WIN, WHITE, "How to play", 30, 75, 40):
-        scene_manager.loadStage(4,WIN,60)
-    if button2.draw(mp, WIN, WHITE, "Quit", 38, 85, 40):
-        pygame.quit()
 
+    createText()
+    if toTile.draw(mp,WIN,BLACK,"To title",28,85,35):
+        scene_manager.loadStage(3,WIN,60)
     pygame.display.update()
 
 def main ():
@@ -51,7 +51,3 @@ def main ():
         draw_window(mousePose)
     
     pygame.quit()
-
-
-if __name__ == "__main__":
-    main()
