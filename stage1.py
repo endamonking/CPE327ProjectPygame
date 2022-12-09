@@ -109,6 +109,7 @@ def draw_window(mainplayer, monster, mp):
         turn(mainplayer, monster, mp,current_Time)
 
     if gameState == "Win":
+        mainplayer.showWhat = "nothing"
         gameState, counter = path.createPath(
             WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True

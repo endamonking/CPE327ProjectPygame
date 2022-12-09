@@ -24,6 +24,7 @@ fireBallEF = pygame.transform.scale(pygame.image.load(
     os.path.join('Asset', 'Effect', 'fireBall.png')), (1800, 300))
 
 animation_cooldown = 500
+efxCounter = 1
 
 
 class player():
@@ -59,6 +60,7 @@ class player():
         return self.turn
 
     def showMenu(self, win, currentTime):
+
         if self.showWhat == "noMana":
             blackScreen.set_alpha(128)
             win.blit(blackScreen, (400, 170))
@@ -136,6 +138,7 @@ class player():
                     pass
     
     def displayAttackEffect(self, WIN, currentTime):
+
         if (currentTime - self.EfxLastUpdate >= 30):
             self.EfxLastUpdate = currentTime
             if self.efxI < 13:
@@ -143,6 +146,7 @@ class player():
             else:
                 self.showWhat = "nothing"
                 self.efxI = 0
+                return
         # width come from total width / total frame
         WIN.blit(attackEF, (810, 330), ((self.efxI * 50), 0, 50, 300))
 
@@ -154,6 +158,7 @@ class player():
             else:
                 self.showWhat = "nothing"
                 self.efxI = 0
+                return
         # width come from total width / total frame
         WIN.blit(fireBallEF, (150 + (self.efxI * 50), 330), ((self.efxI * 100), 0, 100, 300))
 
