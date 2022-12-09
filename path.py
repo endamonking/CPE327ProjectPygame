@@ -232,7 +232,7 @@ def getPassiveskil(win, player, mp):
                 case "Divine will": #afterTurn
                     player.passiveLevel = player.passiveLevel + 0.05
                 case "Odin absolution":
-                    player.passiveLevel = player.passiveLevel + 0.05
+                    player.passiveLevel = player.passiveLevel + 0.02
             i = 0
             state = 1
 

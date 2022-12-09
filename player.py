@@ -18,8 +18,13 @@ player_image = pygame.transform.scale(player_image, (300, 300))
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 blackScreen = pygame.transform.scale(pygame.image.load(
     os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
+attackEF = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'Effect', 'Pattack.png')), (700, 300))
+fireBallEF = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'Effect', 'fireBall.png')), (1800, 300))
 
 animation_cooldown = 500
+efxCounter = 1
 
 
 class player():
@@ -35,7 +40,9 @@ class player():
         self.turnLeft = 0
         self.buffOrNot = False
         self.lastUpdate = pygame.time.get_ticks()
+        self.EfxLastUpdate = pygame.time.get_ticks() + 1
         self.i = 0
+        self.efxI = 0
         self.turn = False
         self.death = False
         self.action = "idle"
@@ -52,7 +59,8 @@ class player():
     def getTurn(self):
         return self.turn
 
-    def showMenu(self, win):
+    def showMenu(self, win, currentTime):
+
         if self.showWhat == "noMana":
             blackScreen.set_alpha(128)
             win.blit(blackScreen, (400, 170))
@@ -61,6 +69,10 @@ class player():
             my_font = pygame.font.SysFont("candara", 36)
             text_surface = my_font.render(text, False, (255, 255, 255))
             win.blit(text_surface, (410, 180))
+        elif self.showWhat == "Attacking":
+            self.displayAttackEffect(win, currentTime)
+        elif self.showWhat == "fireBall":
+            self.displayFireBallEffect(win,currentTime)
 
     def draw_playerIdle(self, WIN, currentTime, Xpose, Ypose):
         if (currentTime - self.lastUpdate >= animation_cooldown):
@@ -94,37 +106,68 @@ class player():
                 self.defendPoint = self.defendPoint + 10
                 self.maxHp = self.maxHp + 20
 
-    def passiveActivated(self):
+    def passiveActivated(self, action):
         print(self.passiveLevel)
-        match self.passiveName:
-            case "Zeus blessing":  # while attacking HP
-                self.currentHp = self.currentHp + \
-                    (self.currentAttackPoint * self.passiveLevel)
-                if self.currentHp >= self.maxHp:
-                    self.currentHp = self.maxHp
-            case "Poseidon grace":
-                self.currentMp = self.currentMp + \
-                    (self.currentAttackPoint * self.passiveLevel)
-                if self.currentMp >= self.maxMp:
-                    self.currentMp = self.maxMp
-            case "Divine will":  # afterTurn
-                self.currentHp = self.currentHp + \
-                    (self.maxHp * self.passiveLevel)
-                if self.currentHp >= self.maxHp:
-                    self.currentHp = self.maxHp
-            case "Odin absolution":
-                self.currentMp = self.currentMp + \
-                    (self.maxMp * self.passiveLevel)
-                if self.currentMp >= self.maxMp:
-                    self.currentMp = self.maxMp
-            case _:
-                pass
-            
+        if action == "Attack":
+            match self.passiveName:
+                case "Zeus blessing":  # while attacking HP
+                    self.currentHp = self.currentHp + \
+                        (self.currentAttackPoint * self.passiveLevel)
+                    if self.currentHp >= self.maxHp:
+                        self.currentHp = self.maxHp
+                case "Poseidon grace":
+                    self.currentMp = self.currentMp + \
+                        (self.currentAttackPoint * self.passiveLevel)
+                    if self.currentMp >= self.maxMp:
+                        self.currentMp = self.maxMp
+                case _:
+                    pass
+        elif action == "turn":
+            match self.passiveName:
+                case "Divine will":  # afterTurn
+                    self.currentHp = self.currentHp + \
+                        (self.maxHp * self.passiveLevel)
+                    if self.currentHp >= self.maxHp:
+                        self.currentHp = self.maxHp
+                case "Odin absolution":
+                    self.currentMp = self.currentMp + \
+                        (self.maxMp * self.passiveLevel)
+                    if self.currentMp >= self.maxMp:
+                        self.currentMp = self.maxMp
+                case _:
+                    pass
+    
+    def displayAttackEffect(self, WIN, currentTime):
+
+        if (currentTime - self.EfxLastUpdate >= 30):
+            self.EfxLastUpdate = currentTime
+            if self.efxI < 13:
+                self.efxI = self.efxI+1
+            else:
+                self.showWhat = "nothing"
+                self.efxI = 0
+                return
+        # width come from total width / total frame
+        WIN.blit(attackEF, (810, 330), ((self.efxI * 50), 0, 50, 300))
+
+    def displayFireBallEffect(self, WIN, currentTime):
+        if (currentTime - self.EfxLastUpdate >= 100):
+            self.EfxLastUpdate = currentTime
+            if self.efxI < 17:
+                self.efxI = self.efxI+1
+            else:
+                self.showWhat = "nothing"
+                self.efxI = 0
+                return
+        # width come from total width / total frame
+        WIN.blit(fireBallEF, (150 + (self.efxI * 50), 330), ((self.efxI * 100), 0, 100, 300))
+
     def attack(self, enemy):
         damaged = math.floor(10*self.currentAttackPoint/(enemy.currentDefPoint+1))
         attack_sound = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
         attack_sound.set_volume(0.5)
         attack_sound.play()
+        self.showWhat = "Attacking"
 
         enemy.currentHp = enemy.currentHp - damaged
         if enemy.currentHp < 0:
@@ -132,7 +175,7 @@ class player():
             enemy.death = True
 
         self.checkDuration()
-        self.passiveActivated()
+        self.passiveActivated("Attack")
         return damaged, "player"
 
     def getSkill(self, skillName):
@@ -187,6 +230,7 @@ class player():
                     self.turn = False
                     enemy.turn = True
                     self.checkDuration()
+                    self.showWhat = "Attacking"
                     self.passiveCounter = 0
                 else:
                     self.showWhat = "noMana"
@@ -206,6 +250,7 @@ class player():
                     self.turn = False
                     enemy.turn = True
                     self.passiveCounter = 0
+                    self.showWhat = "Attacking"
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -293,6 +338,7 @@ class player():
                     self.turn = False
                     enemy.turn = True
                     self.passiveCounter = 0
+                    self.showWhat = "fireBall"
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"
@@ -310,6 +356,7 @@ class player():
                     self.turn = False
                     enemy.turn = True
                     self.passiveCounter = 0
+                    self.showWhat = "fireBall"
                     self.checkDuration()
                 else:
                     self.showWhat = "noMana"

@@ -106,9 +106,10 @@ def draw_window(mainplayer, monster, mp):
     elif monster.currentHp <= 0:
         gameState = monster.isDead()
     else:
-        turn(mainplayer, monster, mp)
+        turn(mainplayer, monster, mp,current_Time)
 
     if gameState == "Win":
+        mainplayer.showWhat = "nothing"
         gameState, counter = path.createPath(
             WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True
@@ -127,7 +128,7 @@ def draw_window(mainplayer, monster, mp):
     pygame.display.update()
 
 
-def turn(mainplayer, monster, mp):
+def turn(mainplayer, monster, mp, current_Time):
     global action_cooldown
     global counter
     global stunDuration
@@ -137,7 +138,7 @@ def turn(mainplayer, monster, mp):
     if stunDuration == 1:
         stunDuration = 0
         monster.action = "idle"
-    mainplayer.showMenu(WIN)
+    mainplayer.showMenu(WIN, current_Time)
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
 
@@ -147,7 +148,7 @@ def turn(mainplayer, monster, mp):
 
     if mainplayer.turn:
         if mainplayer.passiveCounter == 0:
-            mainplayer.passiveActivated()
+            mainplayer.passiveActivated("turn")
             mainplayer.passiveCounter = mainplayer.passiveCounter + 1
 
         action_cooldown = action_cooldown + 1
