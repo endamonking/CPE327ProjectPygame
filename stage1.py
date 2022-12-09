@@ -140,6 +140,7 @@ def turn(mainplayer, monster, mp):
     mainplayer.showMenu(WIN)
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
+
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
         side = "Nothing"
