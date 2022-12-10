@@ -53,6 +53,28 @@ class player():
         self.passiveName = "No"
         self.passiveLevel = 0
         self.passiveCounter = 0
+<<<<<<< HEAD
+=======
+        #player sound effect
+        self.player_attack = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
+        self.player_attack.set_volume(0.02)
+        self.player_double_slash = mixer.Sound(r'sound effect\Knight\double slash.mp3')
+        self.player_double_slash.set_volume(0.02)
+        self.player_headbutt = mixer.Sound(r'sound effect\Knight\headbutt.mp3')
+        self.player_headbutt.set_volume(0.02)
+        self.player_paralyze = mixer.Sound(r'sound effect\Knight\paralyze.mp3')
+        self.player_paralyze.set_volume(0.06)
+        self.player_heal = mixer.Sound(r'sound effect\Knight\healing.mp3')
+        self.player_heal.set_volume(0.02)
+        self.player_restore_mana = mixer.Sound(r'sound effect\Knight\restore mana.mp3')
+        self.player_restore_mana.set_volume(0.02)
+        self.player_roar = mixer.Sound(r'sound effect\Knight\roaring.mp3')
+        self.player_roar.set_volume(0.02)
+        self.player_fire_ball = mixer.Sound(r'sound effect\Knight\fire ball.mp3')
+        self.player_fire_ball.set_volume(0.04)
+        self.player_lighting = mixer.Sound(r'sound effect\Knight\lighting.mp3')
+        self.player_lighting.set_volume(0.03)
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
 
     def getAttackPower(self):
         return self.currentAttackPoint
@@ -165,9 +187,13 @@ class player():
 
     def attack(self, enemy):
         damaged = math.floor(10*self.currentAttackPoint/(enemy.currentDefPoint+1))
+<<<<<<< HEAD
         attack_sound = mixer.Sound(r'sound effect\Knight\normal attack.mp3')
         attack_sound.set_volume(0.5)
         attack_sound.play()
+=======
+        self.player_attack.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
         self.showWhat = "Attacking"
 
         enemy.currentHp = enemy.currentHp - damaged
@@ -221,10 +247,14 @@ class player():
                     dmg = (self.currentAttackPoint * 2) - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
+<<<<<<< HEAD
                     double_slash = mixer.Sound(
                         r'sound effect\Knight\double slash.mp3')
                     double_slash.set_volume(0.5)
                     double_slash.play()
+=======
+                    self.player_double_slash.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
 
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 20
@@ -241,9 +271,13 @@ class player():
                     dmg = self.currentAttackPoint - enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
+<<<<<<< HEAD
                     headbutt = mixer.Sound(r'sound effect\Knight\headbutt.mp3')
                     headbutt.set_volume(0.5)
                     headbutt.play()
+=======
+                    self.player_headbutt.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
 
                     enemy.action = "stunned"
                     enemy.currentHp = enemy.currentHp - dmg
@@ -262,9 +296,14 @@ class player():
                         enemy.currentDefPoint
                     if dmg <= 0:
                         dmg = 0
+<<<<<<< HEAD
                     paralyze = mixer.Sound(r'sound effect\Knight\paralyze.mp3')
                     paralyze.set_volume(0.5)
                     paralyze.play()
+=======
+                    self.player_paralyze.play()
+
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
 
                     enemy.action = "stunned"
                     self.currentMp = self.currentMp - 5
@@ -281,9 +320,13 @@ class player():
                     self.currentHp = self.currentHp + heal
                     if self.currentHp >= self.maxHp:
                         self.currentHp = self.maxHp
+<<<<<<< HEAD
                     heal = mixer.Sound(r'sound effect\Knight\healing.mp3')
                     heal.set_volume(0.5)
                     heal.play()
+=======
+                    self.player_heal.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
                     self.currentMp = self.currentMp - 25
                     self.turn = False
                     enemy.turn = True
@@ -297,10 +340,14 @@ class player():
                 self.currentMp = self.currentMp + reMana
                 if self.currentMp >= self.maxMp:
                     self.currentMp = self.maxMp
+<<<<<<< HEAD
                 restore_mana = mixer.Sound(
                     r'sound effect\Knight\restore mana.mp3')
                 restore_mana.set_volume(0.5)
                 restore_mana.play()
+=======
+                self.player_restore_mana.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
                 self.turn = False
                 enemy.turn = True
                 self.passiveCounter = 0
@@ -316,9 +363,13 @@ class player():
                     self.currentDefendPoint = self.defendPoint + \
                         (self.defendPoint/2)
 
+<<<<<<< HEAD
                     roar = mixer.Sound(r'sound effect\Knight\roaring.mp3')
                     roar.set_volume(0.5)
                     roar.play()
+=======
+                    self.player_roar.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
                     self.currentMp = self.currentMp - 30
                     self.turn = False
                     enemy.turn = True
@@ -330,10 +381,14 @@ class player():
                     if dmg <= 0:
                         dmg = 0
 
+<<<<<<< HEAD
                     fire_ball = mixer.Sound(
                         r'sound effect\Knight\fire ball.mp3')
                     fire_ball.set_volume(0.5)
                     fire_ball.play()
+=======
+                    self.player_fire_ball.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 35
                     self.turn = False
@@ -349,9 +404,13 @@ class player():
                     dmg = (self.currentAttackPoint * 2)
                     if dmg <= 0:
                         dmg = 0
+<<<<<<< HEAD
                     lighting = mixer.Sound(r'sound effect\Knight\lighting.mp3')
                     lighting.set_volume(0.5)
                     lighting.play()
+=======
+                    self.player_lighting.play()
+>>>>>>> 7f76abba0caaec2eba47cb0eb2c929624f2efd2c
                     enemy.currentHp = enemy.currentHp - dmg
                     self.currentMp = self.currentMp - 25
                     self.turn = False
