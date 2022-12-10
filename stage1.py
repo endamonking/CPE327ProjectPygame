@@ -106,7 +106,7 @@ def draw_window(mainplayer, monster, mp):
     elif monster.currentHp <= 0:
         gameState = monster.isDead()
     else:
-        turn(mainplayer, monster, mp,current_Time)
+        turn(mainplayer, monster, mp, current_Time)
 
     if gameState == "Win":
         mainplayer.showWhat = "nothing"
@@ -145,7 +145,7 @@ def turn(mainplayer, monster, mp, current_Time):
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
         side = "Nothing"
-
+    
     if mainplayer.turn:
         if mainplayer.passiveCounter == 0:
             mainplayer.passiveActivated("turn")
@@ -167,6 +167,8 @@ def turn(mainplayer, monster, mp, current_Time):
 
             if (button2.draw(mp, WIN, BLACK, "Skills", 28, 90, 37)) and action_cooldown >= action_WaitTime:
                 mainplayer.action = "usingSkill"
+            if monster.currentHp <= 0:
+                dmg = 0
 
     elif monster.turn:
         action_cooldown = action_cooldown + 1
@@ -226,18 +228,18 @@ def showDamage(DMG, side, player):
         my_font = pygame.font.SysFont("candara", 26)
         text_surface = my_font.render(finalText, False, (255, 255, 255))
         WIN.blit(text_surface, (410, 180))
-
+    
 
 def createMonster(monster):
     # NAME,hp,Def,Atk,Xpose,Ypose
-    slime = enemy.enemy("slime",15,10,5,200,100)
-    zombie = enemy.enemy("zombie",20,5,5,200,200)
-    dragon = enemy.enemy("dragon",80,10,15,360,300)
-    werewolf1 = enemy.enemy("werewolf1",50,10,10, 200, 200)
-    werewolf2 = enemy.enemy("werewolf2",80,15,12, 200, 200)
-    witch = enemy.enemy("witch",100,10,30,200,200)
-    boss1 =enemy.enemy("boss1",150,15,40,200,200)
-    boss2 =enemy.enemy("boss2",200,15,50,200,200)
+    slime = enemy.enemy("slime", 15, 10, 5, 200, 100)
+    zombie = enemy.enemy("zombie", 20, 5, 5, 200, 200)
+    dragon = enemy.enemy("dragon", 80, 10, 15, 360, 300)
+    werewolf1 = enemy.enemy("werewolf1", 50, 10, 10, 200, 200)
+    werewolf2 = enemy.enemy("werewolf2", 80, 15, 12, 200, 200)
+    witch = enemy.enemy("witch", 100, 10, 30, 200, 200)
+    boss1 = enemy.enemy("boss1", 150, 15, 40, 200, 200)
+    boss2 = enemy.enemy("boss2", 200, 15, 50, 200, 200)
 
     #monster.append = enemy.enemy("zombie",80,0,20,200,100)
     # สร้างมอนเพิ่ม
@@ -258,7 +260,7 @@ def main():
     clock = pygame.time.Clock()
     gamRunning = True
     # order list name hp defend attack xpose ypose
-    mainplayer = player.player(100,100, 10, 10)
+    mainplayer = player.player(100, 100, 10, 10)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:
