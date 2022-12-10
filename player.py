@@ -127,12 +127,12 @@ class player():
             match self.passiveName:
                 case "Divine will":  # afterTurn
                     self.currentHp = self.currentHp + \
-                        (self.maxHp * self.passiveLevel)
+                        (self.maxHp * self.passiveLevel)*0.5
                     if self.currentHp >= self.maxHp:
                         self.currentHp = self.maxHp
                 case "Odin absolution":
                     self.currentMp = self.currentMp + \
-                        (self.maxMp * self.passiveLevel)
+                        (self.maxMp * self.passiveLevel)*0.5
                     if self.currentMp >= self.maxMp:
                         self.currentMp = self.maxMp
                 case _:
@@ -154,7 +154,7 @@ class player():
     def displayFireBallEffect(self, WIN, currentTime):
         if (currentTime - self.EfxLastUpdate >= 100):
             self.EfxLastUpdate = currentTime
-            if self.efxI < 17:
+            if self.efxI < 12:
                 self.efxI = self.efxI+1
             else:
                 self.showWhat = "nothing"
@@ -247,7 +247,7 @@ class player():
 
                     enemy.action = "stunned"
                     enemy.currentHp = enemy.currentHp - dmg
-                    self.currentMp = self.currentMp - 15
+                    self.currentMp = self.currentMp - 35
                     self.turn = False
                     enemy.turn = True
                     self.passiveCounter = 0
@@ -293,7 +293,7 @@ class player():
                     self.showWhat = "noMana"
                 return 0, "player"
             case "Restore mana":
-                reMana = self.attackPoint * 1.5
+                reMana = self.attackPoint * 1.1
                 self.currentMp = self.currentMp + reMana
                 if self.currentMp >= self.maxMp:
                     self.currentMp = self.maxMp
