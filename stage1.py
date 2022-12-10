@@ -106,7 +106,7 @@ def draw_window(mainplayer, monster, mp):
     elif monster.currentHp <= 0:
         gameState = monster.isDead()
     else:
-        turn(mainplayer, monster, mp,current_Time)
+        turn(mainplayer, monster, mp, current_Time)
 
     if gameState == "Win":
         mainplayer.showWhat = "nothing"
@@ -114,6 +114,7 @@ def draw_window(mainplayer, monster, mp):
             WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True
         monster.turn = False
+
     elif gameState == "Next":
         counter = counter + 1
         gameState = "Normal"
@@ -134,17 +135,18 @@ def turn(mainplayer, monster, mp, current_Time):
     global stunDuration
     global dmg
     global side
-
+    
     if stunDuration == 1:
         stunDuration = 0
         monster.action = "idle"
     mainplayer.showMenu(WIN, current_Time)
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
+
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
         side = "Nothing"
-
+    
     if mainplayer.turn:
         if mainplayer.passiveCounter == 0:
             mainplayer.passiveActivated("turn")
@@ -177,7 +179,7 @@ def turn(mainplayer, monster, mp, current_Time):
                 elif monster.name == "zombie":
                     dmg, side = monster.attackZombie(mainplayer)
                 elif monster.name == "dragon":
-                    dmg, side = monster.attackDragon(mainplayer)
+                    dmg, side = monster.attackDragon(mainplayer,current_Time)
                 elif monster.name == "werewolf1":
                     dmg, side = monster.attackWerewolf1(mainplayer)
                 elif monster.name == "werewolf2":
@@ -203,7 +205,10 @@ def turn(mainplayer, monster, mp, current_Time):
                     dmg, side = monster.castWitch(mainplayer)
                 if monster.name == "boss2":
                     dmg, side = monster.castBoss(mainplayer)
-
+    if monster.death :
+        if monster.name != "zombie" or monster.revi == 3:
+            dmg = 0
+    print(monster.death)
     pygame.display.update()
 
 
@@ -225,18 +230,18 @@ def showDamage(DMG, side, player):
         my_font = pygame.font.SysFont("candara", 26)
         text_surface = my_font.render(finalText, False, (255, 255, 255))
         WIN.blit(text_surface, (410, 180))
-
+    
 
 def createMonster(monster):
     # NAME,hp,Def,Atk,Xpose,Ypose
-    slime = enemy.enemy("slime",15,10,5,200,100)
-    zombie = enemy.enemy("zombie",20,5,5,200,200)
-    dragon = enemy.enemy("dragon",80,10,15,360,300)
-    werewolf1 = enemy.enemy("werewolf1",50,10,10, 200, 200)
-    werewolf2 = enemy.enemy("werewolf2",80,15,12, 200, 200)
-    witch = enemy.enemy("witch",100,10,30,200,200)
-    boss1 =enemy.enemy("boss1",150,15,40,200,200)
-    boss2 =enemy.enemy("boss2",200,15,50,200,200)
+    slime = enemy.enemy("slime", 15, 10, 5, 200, 100)
+    zombie = enemy.enemy("zombie", 20, 5, 5, 200, 200)
+    dragon = enemy.enemy("dragon", 100, 10, 15, 360, 300)
+    werewolf1 = enemy.enemy("werewolf1", 80, 10, 10, 200, 200)
+    werewolf2 = enemy.enemy("werewolf2", 100, 15, 12, 200, 200)
+    witch = enemy.enemy("witch", 200, 10, 30, 200, 200)
+    boss1 = enemy.enemy("boss1", 150, 15, 35, 200, 200)
+    boss2 = enemy.enemy("boss2", 200, 15, 40, 200, 200)
 
     #monster.append = enemy.enemy("zombie",80,0,20,200,100)
     # สร้างมอนเพิ่ม
@@ -257,7 +262,7 @@ def main():
     clock = pygame.time.Clock()
     gamRunning = True
     # order list name hp defend attack xpose ypose
-    mainplayer = player.player(100,100, 10, 10)
+    mainplayer = player.player(100, 100, 10, 10)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:

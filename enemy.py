@@ -12,6 +12,12 @@ pygame.mixer.init()
 pygame.mixer.pre_init(44100,16,2,4096)
 #load asset
 BLACK = (0,0,0) 
+WIDTH = 1080
+HEIGHT = 720
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+fireBallEF = pygame.transform.scale(pygame.image.load(
+    os.path.join('Asset', 'Effect', 'fireBall.png')), (1800, 300))
+fireBallEF = pygame.transform.rotate(fireBallEF,180)
 animation_cooldown = 500
 blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (300, 75))
 boss_effect = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'boss_effect.png')), (200, 200))
@@ -30,6 +36,7 @@ class enemy():
         self.attackPoint = attackPoint
         self.currentAtkPoint = self.attackPoint
         self.lastUpdate = pygame.time.get_ticks()
+        self.EfxLastUpdate = pygame.time.get_ticks() + 1
         self.i = 0
         self.enemy_image = pygame.image.load(f'Asset/{self.name}/0.png')
         self.enemy_image = pygame.transform.scale(self.enemy_image, (xScale, yScale))
@@ -38,9 +45,11 @@ class enemy():
         self.defendBuff = False
         self.attackBuff = False
         self.action = "idle"
+        self.showWhat = "nothing"
         self.casting = False
         self.skillList = []
         self.revi = 0
+        self.efxI = 0
         #Slime sound effect
         self.slime_attack = mixer.Sound(r'sound effect\Slime\regenerate.mp3')
         self.slime_attack.set_volume(0.04)
@@ -101,7 +110,6 @@ class enemy():
         self.boss2_triple_slash.set_volume(0.02)
         self.boss2_drain_mana = mixer.Sound(r'sound effect\Dark knight P2\dark ball.mp3')
         self.boss2_drain_mana.set_volume(0.02)
-
 
     def getAttackPower(self):
         return self.attackPoint
@@ -168,13 +176,15 @@ class enemy():
             enemy.death = True
         return damaged, "monster"
     #dragon skill  
-    def attackDragon(self,enemy):
+    def attackDragon(self,enemy,currentTime):
         global Defi
         print(Defi)
         rand = random.randint(1,100)
         damaged = 0
         if rand < 21:
             self.dragon_fire_breath.play()
+            
+            self.displayFireBallEffect(WIN,currentTime)
             print("fire breathing")
             damaged = self.attackPoint * 1.5
             
@@ -200,7 +210,17 @@ class enemy():
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
-
+    def displayFireBallEffect(self, WIN, currentTime):
+        if (currentTime - self.EfxLastUpdate >= 100):
+            self.EfxLastUpdate = currentTime
+            if self.efxI < 12:
+                self.efxI = self.efxI+1
+            else:
+                self.showWhat = "nothing"
+                self.efxI = 0
+                return
+        # width come from total width / total frame
+        WIN.blit(fireBallEF, (150 + ((12-self.efxI) * 50), 330), (((12-self.efxI) * 100), 0, 100, 300))
     #werewolf1 skill  
     def attackWerewolf1(self,enemy):
         global Defi
@@ -448,6 +468,7 @@ class enemy():
                 self.revi = self.revi + 1
             else:
                 self.death = True
+            return gameStage
         elif self.currentHp <= 0 and self.name == "werewolf1":
             print("knight become werewolf")
             gameStage = "Next"
