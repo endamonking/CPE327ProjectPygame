@@ -4,6 +4,7 @@ import button
 import random
 
 WHITE = (255,255,255)
+BLACK = (0,0,0)
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (1000, 700))
 
@@ -27,7 +28,7 @@ def createStory(win, skillName, mp):
     i = i +1
 
     if i >= 60:
-        if but1.draw(mp, win, WHITE, "Next", 30, 100, 37):
+        if but1.draw(mp, win, BLACK, "Next", 30, 100, 37):
             state = 3
             i = 0
 
@@ -197,7 +198,7 @@ def getPassiveskil(win, player, mp):
     if i >= 60:
         if b == 0:
             displaySkillDescription(passiveSkillList[0], 100,180,win)
-            if event1.draw(mp, win, WHITE, passiveSkillList[0], 28, 50, 37):
+            if event1.draw(mp, win, BLACK, passiveSkillList[0], 28, 50, 37):
                 state = 1
                 i = 0
                 passiveSkillAlready = False
@@ -206,7 +207,7 @@ def getPassiveskil(win, player, mp):
                 b = b +1
                 
             displaySkillDescription(passiveSkillList[1], 100,380,win)
-            if event2.draw(mp, win, WHITE, passiveSkillList[1], 28, 50, 37):
+            if event2.draw(mp, win, BLACK, passiveSkillList[1], 28, 50, 37):
                 state = 1
                 i = 0
                 passiveSkillAlready = False
@@ -215,7 +216,7 @@ def getPassiveskil(win, player, mp):
                 b = b +1
             
             displaySkillDescription(passiveSkillList[2], 100,580,win)
-            if event3.draw(mp, win, WHITE, passiveSkillList[2], 28, 50, 37):
+            if event3.draw(mp, win, BLACK, passiveSkillList[2], 28, 50, 37):
                 state = 1
                 i = 0
                 passiveSkillAlready = False
@@ -231,7 +232,7 @@ def getPassiveskil(win, player, mp):
                 case "Divine will": #afterTurn
                     player.passiveLevel = player.passiveLevel + 0.05
                 case "Odin absolution":
-                    player.passiveLevel = player.passiveLevel + 0.05
+                    player.passiveLevel = player.passiveLevel + 0.02
             i = 0
             state = 1
 
@@ -260,7 +261,7 @@ def getActiveSkill(win,player,mp):
 
     if i >= 60: 
         displaySkillDescription(activeSkillList[0], 100,180,win)
-        if Aevent1.draw(mp, win, WHITE, activeSkillList[0], 28, 50, 37):
+        if Aevent1.draw(mp, win, BLACK, activeSkillList[0], 28, 50, 37):
             state = 2
             i = 0
             activeSkillAlready = False
@@ -268,7 +269,7 @@ def getActiveSkill(win,player,mp):
             skillStory = activeSkillList[0]
 
         displaySkillDescription(activeSkillList[1], 100,380,win)
-        if Aevent2.draw(mp, win, WHITE, activeSkillList[1], 28, 50, 37):
+        if Aevent2.draw(mp, win, BLACK, activeSkillList[1], 28, 50, 37):
             state = 2
             i = 0   
             activeSkillAlready = False
@@ -276,7 +277,7 @@ def getActiveSkill(win,player,mp):
             skillStory = activeSkillList[1]
 
         displaySkillDescription(activeSkillList[2], 100,580,win)
-        if Aevent3.draw(mp, win, WHITE, activeSkillList[2], 28, 50, 37):
+        if Aevent3.draw(mp, win, BLACK, activeSkillList[2], 28, 50, 37):
             state = 2
             i = 0
             activeSkillAlready = False
@@ -294,17 +295,17 @@ def upgradeStatus(win,player,mp,counter):
 
     i = i + 1
     if i >= 60:
-        if Sevent1.draw(mp, win, WHITE, "Increase HP and MP", 28, 50, 50):
+        if Sevent1.draw(mp, win, BLACK, "Increase HP and MP", 28, 50, 50):
             player.upgrade_stat(0)
             state = 0
             i = 0  
             counter = counter+1
-        if Sevent2.draw(mp, win, WHITE, "Increase attack power", 28, 50, 50):
+        if Sevent2.draw(mp, win, BLACK, "Increase attack power", 28, 50, 50):
             player.upgrade_stat(1)
             state = 0  
             i = 0  
             counter = counter+1
-        if Sevent3.draw(mp, win, WHITE, "Increase defend power", 28, 50, 50):
+        if Sevent3.draw(mp, win, BLACK, "Increase defend power", 28, 50, 50):
             player.upgrade_stat(2)
             state = 0 
             i = 0   

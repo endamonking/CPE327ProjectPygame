@@ -6,6 +6,7 @@ import stage1
 import deadScene
 import main
 import tutorialScene
+import victoryScreen
 
 def loadStage(stage, WIN, FPS):
     match stage:
@@ -19,3 +20,5 @@ def loadStage(stage, WIN, FPS):
             main.main()
         case 4:
             tutorialScene.main()
+        case 5:
+            victoryScreen.mainLoop(WIN,FPS)

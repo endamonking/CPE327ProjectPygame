@@ -14,7 +14,7 @@ def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2,text_surface3,
     WIN.blit(text_surface2, (200,250))
     WIN.blit(text_surface3, (300,350))
     WIN.blit(text_surface4, (400,450))
-    if (button1.draw(mousePose, WIN, (255,255,255), "NEXT",38, 110, 40)):
+    if (button1.draw(mousePose, WIN, BLACK, "NEXT",38, 110, 40)):
         scene_manager.loadStage(1,WIN,60)
 
     pygame.display.update()
