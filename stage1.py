@@ -94,6 +94,8 @@ def draw_window(mainplayer, monster, mp):
         monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
     elif monster.name == "boss2":
         monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
+
+    if monster.name =="boss2":
         monster.draw_effect(WIN, current_Time, 750, 350, 100)
 
     mainplayer.showHealth(WIN)
@@ -110,6 +112,8 @@ def draw_window(mainplayer, monster, mp):
 
     if gameState == "Win":
         mainplayer.showWhat = "nothing"
+        monster.showWhat = "nothing"
+        monster.dummyText = "nothing"
         gameState, counter = path.createPath(
             WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True
@@ -124,6 +128,7 @@ def draw_window(mainplayer, monster, mp):
         counter = 0
         path.reset()
         gameState = "Normal"
+        mainplayer.showWhat = "nothing"
         scene_manager.loadStage(5, WIN, 60)
 
     pygame.display.update()
@@ -140,11 +145,14 @@ def turn(mainplayer, monster, mp, current_Time):
         stunDuration = 0
         monster.action = "idle"
     mainplayer.showMenu(WIN, current_Time)
+    monster.showMenu(WIN, current_Time)
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
 
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
+        monster.showWhat = "nothing"
+        monster.dummyText = "nothing"
         side = "Nothing"
     
     if mainplayer.turn:
@@ -208,7 +216,6 @@ def turn(mainplayer, monster, mp, current_Time):
     if monster.death :
         if monster.name != "zombie" or monster.revi == 3:
             dmg = 0
-    print(monster.death)
     pygame.display.update()
 
 
@@ -262,7 +269,7 @@ def main():
     clock = pygame.time.Clock()
     gamRunning = True
     # order list name hp defend attack xpose ypose
-    mainplayer = player.player(100, 100, 10, 10)
+    mainplayer = player.player(10000, 10000, 10, 10)
     createMonster(monster)
     mainplayer.turn = True
     while gamRunning:
