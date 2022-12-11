@@ -1,3 +1,5 @@
+#This file use to create Victory scene
+#This will tell the story after fini
 import pygame
 import os
 import button
@@ -7,6 +9,13 @@ BLACK = (0,0,0)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 
+#Display Button and Text
+#Arguments
+# mousePose - The player's mouse posiition
+# WIN - Window screen
+# text_surface1 - First text 
+# text_surface2 - Second text 
+# text_surface3 - Third text 
 def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2, button1,text_surface3):
     WIN.fill(BLACK)
 
@@ -19,6 +28,11 @@ def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2, button1,text_
 
     pygame.display.update()
 
+
+#mainloop of victory scene
+#Arguments
+# WIN - window screen
+# FPS - Maximum frame per second 
 def mainLoop(WIN, FPS):
     vicText = "Victory"
     text1 = "The Prince Successfully retakes the throne. He was able to gather an army and destroy the Germania Empire." 

@@ -1,3 +1,5 @@
+# Control the main menu of game
+# 
 import pygame
 import button
 import os
@@ -27,7 +29,9 @@ background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'tit
 #player  = player.player(100,100)
 
 
-
+# Use to draw picture or button to display
+# Arguments
+# mp - Mouse positon. The position of mouse
 def draw_window(mp):
     WIN.fill(BLACK)
     WIN.blit(background,(0,0))
@@ -41,6 +45,7 @@ def draw_window(mp):
 
     pygame.display.update()
 
+#Main menu Loop
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True

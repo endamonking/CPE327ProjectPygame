@@ -1,3 +1,6 @@
+#
+# This is the file used to display the introduction before entering gameplay mode. which tells about the history or story of this game
+#
 import pygame
 import os
 import button
@@ -7,6 +10,7 @@ BLACK = (0,0,0)
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 
+#Use to set thescreen and set the position of the text
 def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2,text_surface3, text_surface4, button1):
     WIN.fill(BLACK)
     WIN.blit(background,(0,0))
@@ -19,6 +23,8 @@ def draw_windowStage0(mousePose, WIN, text_surface1,text_surface2,text_surface3,
 
     pygame.display.update()
 
+#The story part
+#The text that show in the introduction
 def stage0(WIN, FPS):
     intro1 = "The year is 1234, the Germania Empire has decided to attack the peaceful country Thermidor Empire." 
     intro2 = "The monster from Germania broke into the king's castle and assassinated him."

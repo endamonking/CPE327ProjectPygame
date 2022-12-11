@@ -1,3 +1,5 @@
+# Control path system. Will creted choice that Player must have to choose Then created dialog depend on what user choose
+# Also Player will stronger depend on what player choose
 import pygame
 import os
 import button
@@ -19,7 +21,11 @@ passiveLevelList = []
 skillStory = ""
 b = 0
 
-
+# display story dialog depend on player choose active skill
+# Argument
+# win - window screen
+# skillName - The skill name that player choose to upgrade
+# mp - The position of player's mouse 
 def createStory(win, skillName, mp):
     global state
     global i
@@ -54,7 +60,12 @@ def createStory(win, skillName, mp):
     text_surface = my_font.render(text, False, (255,255,255))
     win.blit(text_surface, (100, 200))
     
-
+# display the description of skill to screen 
+# Arguments
+# skillName - Skill's name that want to display description
+# xPose - The Position of description in X axis
+# Ypose - The position of description in Y axis
+# win - window screen
 def displaySkillDescription(skillName, xPose, Ypose, win):
 
     match skillName:
@@ -87,7 +98,11 @@ def displaySkillDescription(skillName, xPose, Ypose, win):
     text_surface = my_font.render(text, False, (255,255,255))
     win.blit(text_surface, (xPose, Ypose))
 
-
+#random 3 skills that not duplicated and not the player already has then stored it in list
+#Arguments
+# player - Player(Object)
+#return 
+#skillList - The list of skills that got from random
 def randomActiveSkill_AndCheck(player):
     randoming = True
     while randoming:
@@ -130,6 +145,10 @@ def randomActiveSkill_AndCheck(player):
 
     return skillList
 
+#Random passive skill 3 out of 4 to make player choose and no duplicated
+#Return
+#skillList - List of skills that got from random
+#levelList - List of base attribute of passsive level
 def randomPassiveSkill():
     randoming = True
     while randoming:
@@ -153,7 +172,16 @@ def randomPassiveSkill():
                     levelList.append(0.05)
 
         return skillList, levelList
-
+#Link to other phase (passive, active skill, created story, upgrade status)
+#Arguments
+# win - window screen
+# player - Player (Object)
+# mp - The player's mouse position
+# gameState - State of the game
+# couter - Monster counter (Which monster right now)
+# return
+# newGS - New game state that goinf to change
+# newCounter - New couter number (next monster)
 def createPath(win,player,mp, gameState, counter):
     newGS = "Win"
     newCounter = counter
@@ -177,7 +205,13 @@ def createPath(win,player,mp, gameState, counter):
 
     return newGS, newCounter
 
-
+#Display passive choice when player dont have passive.
+#But if player already have passsive the passive will got
+#upgrade instead
+#Arguments
+# win - window screen
+# player - Player (Object)
+# mp - the player's mouse position
 def getPassiveskil(win, player, mp):
     global state
     global b
@@ -236,6 +270,13 @@ def getPassiveskil(win, player, mp):
             i = 0
             state = 1
 
+#Display the actiive skill choice to let player choose
+#but if player already have more than 4 skills
+#it will skip.
+#Arguments
+# win - window screen
+# player - Player (object)
+# mp - The player's mouse position
 def getActiveSkill(win,player,mp):
     global state
     global i 
@@ -284,6 +325,15 @@ def getActiveSkill(win,player,mp):
             player.getSkill(activeSkillList[2])
             skillStory = activeSkillList[2]
 
+#Display 3 choice to let player choose to upgrade their power
+#Arguments 
+# win - window screen
+# player - Player (Object)
+# mp - The player's mouse position
+# counter - Monster counter
+# return 
+# "Normale" - It going to return new game state so make game state back to normal
+# counter - New monster counter. It choose +1 so it going to be nex monster 
 def upgradeStatus(win,player,mp,counter):
     global state
     global i
@@ -313,6 +363,7 @@ def upgradeStatus(win,player,mp,counter):
     
     return "Normal", counter 
 
+#Reset all global variable to defualt value 
 def reset():
     global state 
     global i 
