@@ -62,6 +62,7 @@ class player():
         self.showWhat = "nothing" # Use to be dummy to display to screen
         self.buff = "none"
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.passiveName = "No"
         self.passiveLevel = 0
         self.passiveCounter = 0
@@ -84,6 +85,11 @@ class player():
         self.player_fire_ball.set_volume(0.04)
         self.player_lighting = mixer.Sound(r'sound effect\Knight\lighting.mp3')
         self.player_lighting.set_volume(0.03)
+=======
+        self.passiveName = "No" # The name of passive that player has
+        self.passiveLevel = 0 # The passive level of player 
+        self.passiveCounter = 0 # The counter of passive so it cannot do multiple time per action
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 =======
         self.passiveName = "No" # The name of passive that player has
         self.passiveLevel = 0 # The passive level of player 

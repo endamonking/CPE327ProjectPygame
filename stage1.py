@@ -260,14 +260,20 @@ def showDamage(DMG, side, player):
         text_surface = my_font.render(finalText, False, (255, 255, 255))
         WIN.blit(text_surface, (410, 180))
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
     
 #Created Monster object then stored it in Monster List
 #Arguments
 # monster - Monster list (It should be empty)
 #Return - It should return the monster list
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 def createMonster(monster):
     # NAME,hp,Def,Atk,Xpose,Ypose

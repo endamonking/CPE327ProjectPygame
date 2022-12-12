@@ -51,6 +51,7 @@ class enemy():
         self.currentDefPoint = self.defendPoint # Cureent DEF of enemy. Start at DEFpoint
         self.attackPoint = attackPoint
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.currentAtkPoint = self.attackPoint
         self.lastUpdate = pygame.time.get_ticks()
         self.EfxLastUpdate = pygame.time.get_ticks() + 1
@@ -129,6 +130,8 @@ class enemy():
         self.boss2_drain_mana.set_volume(0.02)
 
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
         self.currentAtkPoint = self.attackPoint #Current ATK of enemy. Start at ATKpoint
         self.lastUpdate = pygame.time.get_ticks() #To get the Time of enemy active 
         self.finalUpdate = pygame.time.get_ticks() #To get the Time of enemy active 
@@ -150,6 +153,9 @@ class enemy():
         
     # give enemy current ATK point
     # Return - current ATK point
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
     def getAttackPower(self):
         return self.attackPoint
@@ -233,11 +239,14 @@ class enemy():
         if rand < 3:
             self.currentHp = self.maxHp
 <<<<<<< HEAD
+<<<<<<< HEAD
             print("enemy heal")
         elif rand >= 2:
             damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             self.slime_attack.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "usingSkill"
             self.dummyText = "Healing"
         #Normal attack with chance 80%
@@ -249,6 +258,9 @@ class enemy():
             regen_sound.play()
             self.showWhat = "Attacking"
             self.dummyText = "Attack"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             enemy.currentHp = enemy.currentHp - damaged
             if enemy.currentHp <= 0 :
@@ -283,9 +295,12 @@ class enemy():
         #Deal damage to the player
         else:
 <<<<<<< HEAD
+<<<<<<< HEAD
             damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             self.zombie_attack.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
             self.showWhat = "Attacking"
             self.dummyText = "Attack"
@@ -315,8 +330,11 @@ class enemy():
         #Deal damage to the player with 1.5 times attack power with ignore player's defendpoint
         if rand < 21:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.dragon_fire_breath.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "usingSkill"
             self.dummyText = "Fire breathing"
             fire_ball = mixer.Sound(r'sound effect\Dragon\fire.mp3')
@@ -340,6 +358,9 @@ class enemy():
             iron_skill.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Iron skin"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Iron skin")
             self.defendBuff = True
@@ -360,6 +381,9 @@ class enemy():
             attack.set_volume(global_sound)
             attack.play()
         #count for defend buff duration
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
         if self.defendBuff == True:
             Defi = Defi + 1
@@ -374,11 +398,17 @@ class enemy():
         return damaged, "monster"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
     #Show fireball effect
     #Arguments
     # win - window screen
     # currentTime - The time the program is running   
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
     def displayFireBallEffect(self, WIN, currentTime):
         if (currentTime - self.EfxLastUpdate >= 100):
@@ -392,15 +422,21 @@ class enemy():
         # width come from total width / total frame
         WIN.blit(fireBallEF, (150 + ((12-self.efxI) * 50), 330), (((12-self.efxI) * 100), 0, 100, 300))
 <<<<<<< HEAD
+<<<<<<< HEAD
         
     #werewolf1 skill  
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 
     #Set of werewolf phase 1 behavior and skill
     #This form is knight form before becomming werewolf
     #Return damage to display damaged done on screen
     #Argument
     #enemy - player character  
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
     def attackWerewolf1(self,enemy):
         global Defi
@@ -411,15 +447,21 @@ class enemy():
         #Deal damage to the player with 2 times attack power
         if rand < 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
             damaged = 2*self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             self.werewolf_double_slash1.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             damaged = 2*self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
             double_slash = mixer.Sound(r'sound effect\Werewolf\double slash1.mp3')
             double_slash.set_volume(global_sound)
             double_slash.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Double slash"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("enemy double slash")
             if damaged <= 0:
@@ -435,6 +477,9 @@ class enemy():
             iron_skin.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Iron skin"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Iron skin")
             self.defendBuff = True
@@ -444,15 +489,21 @@ class enemy():
         #Deal damage to the player
         else:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.werewolf_attack1.play()
             damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "Attacking"
             self.dummyText = "Attack"
             attack = mixer.Sound(r'sound effect\Werewolf\attack1.mp3')
             attack.set_volume(global_sound)
             attack.play()
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             if damaged <= 0:
                 damaged = 0
@@ -483,15 +534,21 @@ class enemy():
         #Deal damage to the player with 2 times attack power
         if rand < 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
             damaged = 2*self.damageCal(self.attackPoint,enemy.currentDefendPoint)
             self.werewolf_double_slash2.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             damaged = 2*self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
             double_slash = mixer.Sound(r'sound effect\Werewolf\double slash2.mp3')
             double_slash.set_volume(global_sound)
             double_slash.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Double slash"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("enemy double slash")
             if damaged <= 0:
@@ -501,8 +558,11 @@ class enemy():
         elif 3 < rand < 6:
             print("Hell hound")
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.werewolf_hell_hound.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "usingSkill"
             self.dummyText = "Hell hound"
             hell_hound = mixer.Sound(r'sound effect\Werewolf\tansfrom.mp3')
@@ -516,15 +576,21 @@ class enemy():
         #Deal damage to the player
         else:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.werewolf_attack2.play()
             damaged = self.damageCal(self.attackPoint,enemy.currentDefendPoint)
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "Attacking"
             self.dummyText = "Attack"
             attack = mixer.Sound(r'sound effect\Werewolf\attack2.mp3')
             attack.set_volume(global_sound)
             attack.play()
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             if damaged <= 0:
                 damaged = 0
@@ -560,6 +626,9 @@ class enemy():
             casting.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Death phantom"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Death phantom")
             self.action = "casting"
@@ -574,6 +643,9 @@ class enemy():
             demon_bane.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Demon bane"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Demon bane")
             damaged = self.currentAtkPoint
@@ -590,6 +662,9 @@ class enemy():
             draining.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Draining"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Draining")
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
@@ -605,15 +680,21 @@ class enemy():
         #Deal damage to the player
         else:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.witch_attack.play()
             damaged = self.attackPoint - enemy.currentDefendPoint
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "Attacking"
             self.dummyText = "Attack"
             attack = mixer.Sound(r'sound effect\Witch\attack.mp3')
             attack.set_volume(global_sound)
             attack.play()
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             if damaged <= 0:
                 damaged = 0
@@ -656,6 +737,9 @@ class enemy():
             true_slash.play()
             self.showWhat = "usingSkill"
             self.dummyText = "True slash"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("True slash")
             damaged = self.currentAtkPoint
@@ -672,6 +756,9 @@ class enemy():
             dimond_skin.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Dimond skin"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Dimond skin")
             self.defendBuff = True
@@ -688,6 +775,9 @@ class enemy():
             triple_slash.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Triple slash"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Triple slash")
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)*3
@@ -697,8 +787,11 @@ class enemy():
         #Deal damage to the player
         else:
 <<<<<<< HEAD
+<<<<<<< HEAD
             self.boss1_dark_slash.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             self.showWhat = "usingSkill"
             self.dummyText = "Dark slash"
             dark_slash = mixer.Sound(r'sound effect\Dark knight P1\dark slash.mp3')
@@ -740,6 +833,7 @@ class enemy():
         damaged = 0
         global Defi
 <<<<<<< HEAD
+<<<<<<< HEAD
         if rand < 11:
             self.boss2_death_phantom.play()
             print("Death phantom")
@@ -757,6 +851,8 @@ class enemy():
         elif 50 < rand < 71:
             self.boss2_triple_slash.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
         #skill "Death phantom" with chance 15%
         #This unit will enter casting mode
         #after casting done the player instantly death
@@ -800,6 +896,9 @@ class enemy():
             triple_slash.play()
             self.showWhat = "usingSkill"
             self.dummyText = "Triple slash"
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             print("Triple slash")
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint)*3
@@ -820,6 +919,9 @@ class enemy():
             drain_mana.set_volume(global_sound)
             drain_mana.play()
             damaged = self.damageCal(self.currentAtkPoint,enemy.currentDefendPoint) 
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
             if damaged < 0:
                 damaged = 0
@@ -882,8 +984,11 @@ class enemy():
         if self.currentHp <= 0 and self.name == "zombie":
             if self.revi < 3:
 <<<<<<< HEAD
+<<<<<<< HEAD
                 self.zombie_revive.play()
 =======
+=======
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
                 self.showWhat = "usingSkill"
                 self.dummyText = "Revived"
                 regen = mixer.Sound(r'sound effect\Zombie\revive.mp3')

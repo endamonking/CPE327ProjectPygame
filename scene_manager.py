@@ -19,6 +19,9 @@ pygame.init()
 # stage - scene that you want to go
 # WIN - window screen
 # FPS - FPS of game
+<<<<<<< HEAD
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
+=======
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 def loadStage(stage, WIN, FPS):
     match stage:

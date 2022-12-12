@@ -11,7 +11,11 @@ pygame.mixer.init()
 pygame.mixer.pre_init(44100,16,2,4096)
 pygame.mixer.music.load(os.path.join('sound effect','background','background music.mp3'))
 <<<<<<< HEAD
+<<<<<<< HEAD
 pygame.mixer.music.set_volume(0.04)
+=======
+pygame.mixer.music.set_volume(0.4)
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 =======
 pygame.mixer.music.set_volume(0.4)
 >>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
