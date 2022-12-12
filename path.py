@@ -1,0 +1,383 @@
+# Control path system. Will creted choice that Player must have to choose Then created dialog depend on what user choose
+# Also Player will stronger depend on what player choose
+import pygame
+import os
+import button
+import random
+
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
+blackScreen = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'blackScreen.jpg')), (1000, 700))
+
+state = 0
+i = 0
+activeSkillAlready = False
+activeSkillList = []
+upgradeStatusAlready = False
+passiveSkillAlready = False
+passiveSkillList = []
+passiveLevelList = []
+skillStory = ""
+b = 0
+
+# display story dialog depend on player choose active skill
+# Argument
+# win - window screen
+# skillName - The skill name that player choose to upgrade
+# mp - The position of player's mouse 
+def createStory(win, skillName, mp):
+    global state
+    global i
+
+    but1 = button.button(410, 600, button_image, 6)
+    i = i +1
+
+    if i >= 60:
+        if but1.draw(mp, win, BLACK, "Next", 30, 100, 37):
+            state = 3
+            i = 0
+
+    match skillName:
+        case "Double Slash":
+            text = "Meet with a Samurai swordsmith that is under attack by slime, we help him defeat the slime, In return get trained by him."
+        case "Headbutt":
+            text = "Meet with a Viking explorer, we gave him our country map. In return we get trained by him."
+        case "Paralyze":
+            text = "Meet with an alchemist, we gave him some money. In return he gave us a Paralyze skill."
+        case "Heal":
+            text = "Meet with a Healing fountain. We keep it in a bottle."
+        case "Restore mana":
+            text = "Meet with a random traveler that is under attack by a thief. You help the random traveler, he gives you a Restore mana skill."
+        case "Roaring":
+            text = "Meet with a stray wherewolf, we gave him food. In return we gave us Roaring skill."
+        case "Fire ball":
+            text = "Meet with a Dungeon warden, we help him fix the Dungeon entrance. He gave us a Fireball skill in return."
+        case "Lighting bolt":
+            text = "Worship Zeus, he appeared before us and gave us Lighting bolt skill"
+    
+    my_font = pygame.font.SysFont("candara",18)
+    text_surface = my_font.render(text, False, (255,255,255))
+    win.blit(text_surface, (100, 200))
+    
+# display the description of skill to screen 
+# Arguments
+# skillName - Skill's name that want to display description
+# xPose - The Position of description in X axis
+# Ypose - The position of description in Y axis
+# win - window screen
+def displaySkillDescription(skillName, xPose, Ypose, win):
+
+    match skillName:
+        case "Double Slash":
+            text = "Deal double damage of attackpower"
+        case "Headbutt":
+            text = "Deal damage and stun the enemy"
+        case "Paralyze":
+            text = "Stune the enemy"
+        case "Heal":
+            text = "Recovery some HP"
+        case "Restore mana":
+            text = "Recovery some MP"
+        case "Roaring":
+            text = "increase defend and attack power"
+        case "Fire ball":
+            text = "Deal massive damage"
+        case "Lighting bolt":
+            text = "Deal damage to the enemy"
+        case "Zeus blessing": #while attacking HP
+            text = "Hp recover when use normal attack"
+        case "Poseidon grace":
+            text = "Mp recover when use normal attack"
+        case "Divine will": #afterTurn
+            text = "Hp recover at start of your turn"
+        case "Odin absolution":
+            text = "Mp recover at start of your turn"
+    
+    my_font = pygame.font.SysFont("candara",36)
+    text_surface = my_font.render(text, False, (255,255,255))
+    win.blit(text_surface, (xPose, Ypose))
+
+#random 3 skills that not duplicated and not the player already has then stored it in list
+#Arguments
+# player - Player(Object)
+#return 
+#skillList - The list of skills that got from random
+def randomActiveSkill_AndCheck(player):
+    randoming = True
+    while randoming:
+        dupe = True
+        skillList = []
+
+        if len(player.skillList) >=4:
+            print("you cannot have skill more than 4")
+            randoming = False
+            return skillList
+
+        number = random.sample(range(8), 3)
+        for a in number:
+            match a:
+                case 0:
+                    skillList.append("Double Slash")
+                case 1:
+                    skillList.append("Headbutt")
+                case 2:
+                    skillList.append("Paralyze")
+                case 3:
+                    skillList.append("Heal")
+                case 4:
+                    skillList.append("Restore mana")
+                case 5:
+                    skillList.append("Roaring")
+                case 6:
+                    skillList.append("Fire ball")
+                case 7:
+                    skillList.append("Lighting bolt")
+
+        for b in skillList:
+            for c in player.skillList:
+                if b == c:
+                    print("0")
+                    dupe = False
+
+        if dupe == True:
+            randoming = False
+
+    return skillList
+
+#Random passive skill 3 out of 4 to make player choose and no duplicated
+#Return
+#skillList - List of skills that got from random
+#levelList - List of base attribute of passsive level
+def randomPassiveSkill():
+    randoming = True
+    while randoming:
+        skillList = []
+        levelList = []
+
+        number = random.sample(range(4), 3)
+        for a in number:
+            match a:
+                case 0:
+                    skillList.append("Zeus blessing")
+                    levelList.append(0.1)
+                case 1:
+                    skillList.append("Poseidon grace")
+                    levelList.append(0.1)
+                case 2:
+                    skillList.append("Divine will")
+                    levelList.append(0.05)
+                case 3:
+                    skillList.append("Odin absolution")
+                    levelList.append(0.05)
+
+        return skillList, levelList
+#Link to other phase (passive, active skill, created story, upgrade status)
+#Arguments
+# win - window screen
+# player - Player (Object)
+# mp - The player's mouse position
+# gameState - State of the game
+# couter - Monster counter (Which monster right now)
+# return
+# newGS - New game state that goinf to change
+# newCounter - New couter number (next monster)
+def createPath(win,player,mp, gameState, counter):
+    newGS = "Win"
+    newCounter = counter
+
+    text1 = "Choose the upgrade"
+    my_font = pygame.font.SysFont("candara",36)
+    text_surface1 = my_font.render(text1, False, (255,255,255))
+
+    blackScreen.set_alpha(128)
+    win.blit(blackScreen, (50,50))
+    win.blit(text_surface1, (400,100))
+    match state:
+        case 0:
+            getPassiveskil(win,player,mp)
+        case 1:
+            getActiveSkill(win,player,mp)
+        case 2:
+            createStory(win, skillStory,mp)
+        case 3:
+            newGS, newCounter = upgradeStatus(win,player,mp, counter)
+
+    return newGS, newCounter
+
+#Display passive choice when player dont have passive.
+#But if player already have passsive the passive will got
+#upgrade instead
+#Arguments
+# win - window screen
+# player - Player (Object)
+# mp - the player's mouse position
+def getPassiveskil(win, player, mp):
+    global state
+    global b
+    global passiveSkillAlready
+    global passiveSkillList
+    global passiveLevelList
+    global i
+
+    i = i +1
+    event1 = button.button(700, 150, button_image, 6)
+    event2 = button.button(700, 350, button_image, 6)
+    event3 = button.button(700, 550, button_image, 6)
+
+    if passiveSkillAlready == False:
+        passiveSkillList, passiveLevelList = randomPassiveSkill()
+        passiveSkillAlready = True
+    
+    if i >= 60:
+        if b == 0:
+            displaySkillDescription(passiveSkillList[0], 100,180,win)
+            if event1.draw(mp, win, BLACK, passiveSkillList[0], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[0]
+                player.passiveLevel = passiveLevelList[0]
+                b = b +1
+                
+            displaySkillDescription(passiveSkillList[1], 100,380,win)
+            if event2.draw(mp, win, BLACK, passiveSkillList[1], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[1]
+                player.passiveLevel = passiveLevelList[1]
+                b = b +1
+            
+            displaySkillDescription(passiveSkillList[2], 100,580,win)
+            if event3.draw(mp, win, BLACK, passiveSkillList[2], 28, 50, 37):
+                state = 1
+                i = 0
+                passiveSkillAlready = False
+                player.passiveName = passiveSkillList[2]
+                player.passiveLevel = passiveLevelList[2]
+                b = b +1
+        else:
+            match player.passiveName:
+                case "Zeus blessing": #while attacking HP
+                    player.passiveLevel = player.passiveLevel + 0.1
+                case "Poseidon grace":
+                    player.passiveLevel = player.passiveLevel + 0.1
+                case "Divine will": #afterTurn
+                    player.passiveLevel = player.passiveLevel + 0.05
+                case "Odin absolution":
+                    player.passiveLevel = player.passiveLevel + 0.02
+            i = 0
+            state = 1
+
+#Display the actiive skill choice to let player choose
+#but if player already have more than 4 skills
+#it will skip.
+#Arguments
+# win - window screen
+# player - Player (object)
+# mp - The player's mouse position
+def getActiveSkill(win,player,mp):
+    global state
+    global i 
+    global activeSkillAlready
+    global activeSkillList
+    global skillStory
+
+    i = i + 1
+    Aevent1 = button.button(700, 150, button_image, 6)
+    Aevent2 = button.button(700, 350, button_image, 6)
+    Aevent3 = button.button(700, 550, button_image, 6)
+
+    if activeSkillAlready == False:
+        activeSkillList = randomActiveSkill_AndCheck(player)
+        activeSkillAlready = True
+
+    if len(activeSkillList) == 0:
+        state = 3
+        i = 0
+        activeSkillAlready = False
+        print("empty list")
+        pass
+
+    if i >= 60: 
+        displaySkillDescription(activeSkillList[0], 100,180,win)
+        if Aevent1.draw(mp, win, BLACK, activeSkillList[0], 28, 50, 37):
+            state = 2
+            i = 0
+            activeSkillAlready = False
+            player.getSkill(activeSkillList[0])
+            skillStory = activeSkillList[0]
+
+        displaySkillDescription(activeSkillList[1], 100,380,win)
+        if Aevent2.draw(mp, win, BLACK, activeSkillList[1], 28, 50, 37):
+            state = 2
+            i = 0   
+            activeSkillAlready = False
+            player.getSkill(activeSkillList[1])     
+            skillStory = activeSkillList[1]
+
+        displaySkillDescription(activeSkillList[2], 100,580,win)
+        if Aevent3.draw(mp, win, BLACK, activeSkillList[2], 28, 50, 37):
+            state = 2
+            i = 0
+            activeSkillAlready = False
+            player.getSkill(activeSkillList[2])
+            skillStory = activeSkillList[2]
+
+#Display 3 choice to let player choose to upgrade their power
+#Arguments 
+# win - window screen
+# player - Player (Object)
+# mp - The player's mouse position
+# counter - Monster counter
+# return 
+# "Normale" - It going to return new game state so make game state back to normal
+# counter - New monster counter. It choose +1 so it going to be nex monster 
+def upgradeStatus(win,player,mp,counter):
+    global state
+    global i
+    global upgradeStatusAlready
+
+    Sevent1 = button.button(700, 150, button_image, 8)
+    Sevent2 = button.button(700, 350, button_image, 8)
+    Sevent3 = button.button(700, 550, button_image, 8)
+
+    i = i + 1
+    if i >= 60:
+        if Sevent1.draw(mp, win, BLACK, "Increase HP and MP", 28, 50, 50):
+            player.upgrade_stat(0)
+            state = 0
+            i = 0  
+            counter = counter+1
+        if Sevent2.draw(mp, win, BLACK, "Increase attack power", 28, 50, 50):
+            player.upgrade_stat(1)
+            state = 0  
+            i = 0  
+            counter = counter+1
+        if Sevent3.draw(mp, win, BLACK, "Increase defend power", 28, 50, 50):
+            player.upgrade_stat(2)
+            state = 0 
+            i = 0   
+            counter = counter+1
+    
+    return "Normal", counter 
+
+#Reset all global variable to defualt value 
+def reset():
+    global state 
+    global i 
+    global activeSkillAlready 
+    global upgradeStatusAlready 
+    global passiveSkillAlready 
+    global skillStory 
+    global b 
+
+    state = 0
+    i = 0
+    activeSkillAlready = False
+    upgradeStatusAlready = False
+    passiveSkillAlready = False
+    skillStory = ""
+    b = 0
+
