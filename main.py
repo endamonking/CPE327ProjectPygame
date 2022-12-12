@@ -1,3 +1,5 @@
+# Control the main menu of game
+# 
 import pygame
 import button
 import os
@@ -8,7 +10,11 @@ import scene_manager
 pygame.mixer.init()
 pygame.mixer.pre_init(44100,16,2,4096)
 pygame.mixer.music.load(os.path.join('sound effect','background','background music.mp3'))
+<<<<<<< HEAD
 pygame.mixer.music.set_volume(0.04)
+=======
+pygame.mixer.music.set_volume(0.4)
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 pygame.mixer.music.play(-1)
 
 WHITE = (255,255,255)
@@ -28,7 +34,9 @@ background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'tit
 #player  = player.player(100,100)
 
 
-
+# Use to draw picture or button to display
+# Arguments
+# mp - Mouse positon. The position of mouse
 def draw_window(mp):
     WIN.fill(BLACK)
     WIN.blit(background,(0,0))
@@ -42,6 +50,7 @@ def draw_window(mp):
 
     pygame.display.update()
 
+#Main menu Loop
 def main ():
     pygame.init()
     clock = pygame.time.Clock()

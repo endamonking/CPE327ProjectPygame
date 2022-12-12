@@ -1,3 +1,5 @@
+# Use to change between scene So another scene that want to go to other scene dont need to import all file.
+# They need only once
 import pygame
 import button
 import os
@@ -7,7 +9,17 @@ import deadScene
 import main
 import tutorialScene
 import victoryScreen
+<<<<<<< HEAD
 pygame.init()
+=======
+
+
+#Change scene to other scene 
+#Arguments
+# stage - scene that you want to go
+# WIN - window screen
+# FPS - FPS of game
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 def loadStage(stage, WIN, FPS):
     match stage:
         case 0:

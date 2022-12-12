@@ -1,3 +1,5 @@
+#       This file use to create Tutorial scene.
+#   This scene will tell how to play of game 
 import pygame
 import button
 import os
@@ -23,22 +25,29 @@ nextBut = button.button(800,50,button_image, 5)
 toTitleBut = button.button(800,300,button_image, 5)
 tutoNo = 0
 
+#Display picture 1
 def drawTuto1():
     WIN.fill(BLACK)
     WIN.blit(tuto1, (0,0))
 
+#Display picture 2
 def drawTuto2():
     WIN.fill(BLACK)
     WIN.blit(tuto2, (0,0))
 
+#Display picture 3
 def drawTuto3():
     WIN.fill(BLACK)
     WIN.blit(tuto3, (0,0))
 
+#Display picture 4
 def drawTuto4():
     WIN.fill(BLACK)
     WIN.blit(tuto4, (0,0))
 
+#Display Next and back button also use to call other image
+#Arguments
+# mp - Player's mouse position
 def draw_window(mp):
     global tutoNo
 
@@ -73,6 +82,7 @@ def draw_window(mp):
 
     pygame.display.update()
 
+#main loop of Tutorial Scene 
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True

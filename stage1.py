@@ -1,3 +1,8 @@
+# 
+# It is part of the code related to the overall gameplay of the game, namely the battle system. 
+# Manages the turn between players and enemy units and helps manage various systems, including the game winning system, 
+# a system that allows players to upgrade characters. Enemy changing system after enemy has been defeat
+#
 import pygame
 import os
 import button
@@ -38,7 +43,9 @@ dmg = 0
 side = "Nothing"
 bossYet = False
 
-
+#To create and display the background picture
+# Arguments
+# currentTime - The time the program is running
 def draw_backgroundaimation(currentTime):
     global i
     global BackgroundLastUpdate
@@ -51,7 +58,9 @@ def draw_backgroundaimation(currentTime):
     # width come from total width / total frame
     WIN.blit(battlescreen, (0, 0), ((i * 1080), 0, 1080, 720))
 
-
+#To create and display the boss background picture
+# Argument 
+# currentTime - The time the programe is running
 def draw_bossBackgroundAnimation(currentTime):
     global i
     global BackgroundLastUpdate
@@ -66,7 +75,11 @@ def draw_bossBackgroundAnimation(currentTime):
     # width come from total width / total frame
     WIN.blit(bossScreen, (0, 0), ((i * 1080), 0, 1080, 720))
 
-
+#Display Player and Monster, Check state of game
+#Arguments
+# mainplater - Player (Object)
+# monster - Monster (Object)
+# mp - The position of mouse
 def draw_window(mainplayer, monster, mp):
     global gameState
     global counter
@@ -94,6 +107,8 @@ def draw_window(mainplayer, monster, mp):
         monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
     elif monster.name == "boss2":
         monster.draw_enemyIdle(WIN, current_Time, 750, 350, 100)
+
+    if monster.name =="boss2":
         monster.draw_effect(WIN, current_Time, 750, 350, 100)
 
     mainplayer.showHealth(WIN)
@@ -110,6 +125,8 @@ def draw_window(mainplayer, monster, mp):
 
     if gameState == "Win":
         mainplayer.showWhat = "nothing"
+        monster.showWhat = "nothing"
+        monster.dummyText = "nothing"
         gameState, counter = path.createPath(
             WIN, mainplayer, mp, gameState, counter)
         mainplayer.turn = True
@@ -124,11 +141,17 @@ def draw_window(mainplayer, monster, mp):
         counter = 0
         path.reset()
         gameState = "Normal"
+        mainplayer.showWhat = "nothing"
         scene_manager.loadStage(5, WIN, 60)
 
     pygame.display.update()
 
-
+#Turn system - Handle the turn-base system. Recieve input from user and monster
+#Arguments
+# mainplayer - Player (Object)
+# monster - Player (Object)
+# mp - The position of mouse
+# current_Time  - The time the program is running
 def turn(mainplayer, monster, mp, current_Time):
     global action_cooldown
     global counter
@@ -140,11 +163,14 @@ def turn(mainplayer, monster, mp, current_Time):
         stunDuration = 0
         monster.action = "idle"
     mainplayer.showMenu(WIN, current_Time)
+    monster.showMenu(WIN, current_Time)
     monster.showMonsterStatus(WIN)
     showDamage(dmg, side, mainplayer)
 
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
+        monster.showWhat = "nothing"
+        monster.dummyText = "nothing"
         side = "Nothing"
 
     if mainplayer.turn:
@@ -208,10 +234,13 @@ def turn(mainplayer, monster, mp, current_Time):
     if monster.death:
         if monster.name != "zombie" or monster.revi == 3:
             dmg = 0
-    print(monster.death)
     pygame.display.update()
 
-
+#Display the damage dealt that made by Player or Monster
+#Arguments
+# DMG - The number of damage 
+# side - Who made DMG
+# player - Player (Object)
 def showDamage(DMG, side, player):
 
     if side == "player" and player.showWhat == "nothing" and DMG != 0:
@@ -230,22 +259,27 @@ def showDamage(DMG, side, player):
         my_font = pygame.font.SysFont("candara", 26)
         text_surface = my_font.render(finalText, False, (255, 255, 255))
         WIN.blit(text_surface, (410, 180))
+<<<<<<< HEAD
 
 
+=======
+    
+#Created Monster object then stored it in Monster List
+#Arguments
+# monster - Monster list (It should be empty)
+#Return - It should return the monster list
+>>>>>>> a2665691d9dc73dc4cf3b8eb074ab6a21f8923b0
 def createMonster(monster):
     # NAME,hp,Def,Atk,Xpose,Ypose
     slime = enemy.enemy("slime", 15, 10, 5, 200, 100)
     zombie = enemy.enemy("zombie", 20, 5, 5, 200, 200)
-    dragon = enemy.enemy("dragon", 100, 10, 15, 360, 300)
+    dragon = enemy.enemy("dragon", 100, 12, 15, 360, 300)
     werewolf1 = enemy.enemy("werewolf1", 80, 10, 10, 200, 200)
     werewolf2 = enemy.enemy("werewolf2", 100, 15, 12, 200, 200)
     witch = enemy.enemy("witch", 200, 10, 30, 200, 200)
     boss1 = enemy.enemy("boss1", 150, 15, 35, 200, 200)
     boss2 = enemy.enemy("boss2", 200, 15, 40, 200, 200)
 
-    #monster.append = enemy.enemy("zombie",80,0,20,200,100)
-    # สร้างมอนเพิ่ม
-    #zombie = enemy.enmy
     monster.append(slime)
     monster.append(zombie)
     monster.append(dragon)
@@ -255,7 +289,7 @@ def createMonster(monster):
     monster.append(boss1)
     monster.append(boss2)
 
-
+#Main loop of battle scene
 def main():
     global counter
     monster = []

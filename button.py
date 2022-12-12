@@ -1,5 +1,13 @@
+#  Created button to display Text and Player can click
+#
 import pygame
 class button():
+    #craete button object
+    #Arguments
+    # x - Position of button in X axis
+    # y - Position of button in y axis
+    # image - Image of button
+    # scale - scale size of button
     def __init__(self, x, y, image, scale):
         width = image.get_width()
         height = image.get_height()
@@ -8,6 +16,17 @@ class button():
         self.rect.topleft = (x,y)
         self.clicked = False
     
+    #Display button and tet to screen
+    #Arguments
+    # mPose - The player's mouse position
+    # WIN - window screen
+    # color - colour of text
+    # word - Text that you wanna print 
+    # szie - Size of text
+    # txPose - Text posiition in x axis
+    # tyPose - Text posiition in y axis
+    # Return 
+    # Action - Action that want button gonna do (Like if else state mean in here = 1)
     def draw(self, mPose, WIN, color, word, size, txPose, tyPose):
         action = False
         pygame.font.init()

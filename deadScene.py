@@ -1,3 +1,5 @@
+# Display Dead scene 
+# Will have Text popup so Player can understand that They are dead
 import pygame
 import button
 import os
@@ -15,6 +17,8 @@ pygame.display.set_caption("Demon's tower")
 button_image = pygame.image.load(os.path.join('Asset', 'prBTN.png'))
 background = pygame.transform.scale(pygame.image.load(os.path.join('Asset', 'title_background.png')), (1080, 720))
 
+
+#Display text to screen
 def createText():
     BigFont = "YOU DEAD" 
     info = "You have fail to reclaimed the throne of Thermidor Empire. Gameover!"
@@ -28,6 +32,9 @@ def createText():
     WIN.blit(text_surface1, (250,140))
     WIN.blit(text_surface2, (100,400))
 
+#Display button and screen
+#Arguments
+# mp - Player's mouse position
 def draw_window(mp):
     WIN.fill(BLACK)
     toTile = button.button(100,600,button_image, 6)
@@ -38,6 +45,7 @@ def draw_window(mp):
         scene_manager.loadStage(3,WIN,60)
     pygame.display.update()
 
+#main loop of Dead scene
 def main ():
     clock = pygame.time.Clock()
     gamRunning = True
