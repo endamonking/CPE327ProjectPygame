@@ -7,7 +7,7 @@ import deadScene
 import main
 import tutorialScene
 import victoryScreen
-
+pygame.init()
 def loadStage(stage, WIN, FPS):
     match stage:
         case 0:

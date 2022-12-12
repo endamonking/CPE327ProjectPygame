@@ -6,7 +6,7 @@ import path
 import enemy
 import scene_manager
 
-
+pygame.init()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 WIDTH = 1080
@@ -135,7 +135,7 @@ def turn(mainplayer, monster, mp, current_Time):
     global stunDuration
     global dmg
     global side
-    
+
     if stunDuration == 1:
         stunDuration = 0
         monster.action = "idle"
@@ -146,7 +146,7 @@ def turn(mainplayer, monster, mp, current_Time):
     if action_cooldown == action_WaitTime:
         mainplayer.showWhat = "nothing"
         side = "Nothing"
-    
+
     if mainplayer.turn:
         if mainplayer.passiveCounter == 0:
             mainplayer.passiveActivated("turn")
@@ -179,7 +179,7 @@ def turn(mainplayer, monster, mp, current_Time):
                 elif monster.name == "zombie":
                     dmg, side = monster.attackZombie(mainplayer)
                 elif monster.name == "dragon":
-                    dmg, side = monster.attackDragon(mainplayer,current_Time)
+                    dmg, side = monster.attackDragon(mainplayer, current_Time)
                 elif monster.name == "werewolf1":
                     dmg, side = monster.attackWerewolf1(mainplayer)
                 elif monster.name == "werewolf2":
@@ -205,7 +205,7 @@ def turn(mainplayer, monster, mp, current_Time):
                     dmg, side = monster.castWitch(mainplayer)
                 if monster.name == "boss2":
                     dmg, side = monster.castBoss(mainplayer)
-    if monster.death :
+    if monster.death:
         if monster.name != "zombie" or monster.revi == 3:
             dmg = 0
     print(monster.death)
@@ -230,7 +230,7 @@ def showDamage(DMG, side, player):
         my_font = pygame.font.SysFont("candara", 26)
         text_surface = my_font.render(finalText, False, (255, 255, 255))
         WIN.blit(text_surface, (410, 180))
-    
+
 
 def createMonster(monster):
     # NAME,hp,Def,Atk,Xpose,Ypose

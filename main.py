@@ -3,6 +3,7 @@ import button
 import os
 import scene_manager
 
+
 # Background music
 pygame.mixer.init()
 pygame.mixer.pre_init(44100,16,2,4096)
@@ -42,6 +43,7 @@ def draw_window(mp):
     pygame.display.update()
 
 def main ():
+    pygame.init()
     clock = pygame.time.Clock()
     gamRunning = True
     while gamRunning:

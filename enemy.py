@@ -210,6 +210,7 @@ class enemy():
             enemy.currentHp = 0
             enemy.death = True
         return damaged, "monster"
+
     def displayFireBallEffect(self, WIN, currentTime):
         if (currentTime - self.EfxLastUpdate >= 100):
             self.EfxLastUpdate = currentTime
@@ -221,6 +222,7 @@ class enemy():
                 return
         # width come from total width / total frame
         WIN.blit(fireBallEF, (150 + ((12-self.efxI) * 50), 330), (((12-self.efxI) * 100), 0, 100, 300))
+        
     #werewolf1 skill  
     def attackWerewolf1(self,enemy):
         global Defi
